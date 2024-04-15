@@ -1,0 +1,28 @@
+name: Supabase CI
+
+on:
+  push:
+    branches:
+      - production
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Migrate production database
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
+      PRODUCTION_PROJECT_ID: ${{ secrets.PRODUCTION_PROJECT_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+
+      - name: Deploy migrations to production
+        run: |
+          cd apps/web
+          supabase link --project-ref ${{ env.PRODUCTION_PROJECT_ID }}
+          supabase db push
