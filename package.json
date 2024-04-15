@@ -1,11 +1,24 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 6868",
+    "devx": "pnpm supabase stop && pnpm i && pnpm supabase start && next dev -p 6868",
+    "devrs": "pnpm supabase stop --no-backup && pnpm i && pnpm supabase start && next dev -p 6868",
+    "preview": "next build && next start -p 6868",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "stop": "pnpm supabase stop",
+    "sb:status": "pnpm supabase status",
+    "sb:start": "pnpm supabase start",
+    "sb:stop": "pnpm supabase stop",
+    "sb:sync": "pnpm supabase db pull",
+    "sb:reset": "pnpm supabase db reset",
+    "sb:diff": "pnpm supabase db diff -f new_migration",
+    "sb:new": "pnpm supabase migration new new_migration",
+    "sb:up": "pnpm supabase migration up",
+    "sb:typegen": "pnpm dlx supabase gen types typescript --local --schema public > types/supabase.ts && prettier --write types/supabase.ts"
   },
   "dependencies": {
     "@supabase/ssr": "latest",

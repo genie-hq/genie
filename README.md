@@ -78,7 +78,7 @@ If you wish to just develop locally and not deploy to Vercel, [follow the steps 
    npm run dev
    ```
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+   The starter kit should now be running on [localhost:6868](http://localhost:6868/).
 
 > Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
 
