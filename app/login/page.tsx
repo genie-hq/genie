@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { SubmitButton } from "./submit-button";
+import { Separator } from "@/components/ui/separator";
+import GithubLoginButton from "./github-login-button";
 
 export default function Login({
   searchParams,
@@ -52,7 +54,7 @@ export default function Login({
   };
 
   return (
-    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
+    <div className="flex-1 flex flex-col w-full px-2 md:px-8 sm:max-w-md justify-center gap-2">
       <Link
         href="/"
         className="absolute left-8 top-8 py-2 px-4 rounded-md no-underline text-foreground bg-btn-background hover:bg-btn-background-hover flex items-center group text-sm"
@@ -74,7 +76,7 @@ export default function Login({
         Back
       </Link>
 
-      <form className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
+      <form className="flex flex-col w-full justify-center gap-2 text-foreground">
         <label className="text-md" htmlFor="email">
           Email
         </label>
@@ -110,6 +112,12 @@ export default function Login({
           </p>
         )}
       </form>
+      <div className="flex gap-1 items-center justify-center">
+        <Separator className="w-1/3" />
+        <span className="text-sm text-center text-foreground/50">or</span>
+        <Separator className="w-1/3" />
+      </div>
+      <GithubLoginButton />
     </div>
   );
 }
