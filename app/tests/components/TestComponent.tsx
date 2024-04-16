@@ -10,6 +10,7 @@ function TestComponents({ testInfo }) {
   };
   return (
     <div className="w-full lg:w-4/5 flex flex-col">
+
       <TestHeader open={open} handleOpen={handleOpen} name={testInfo.name} />
       <TestBody open={open} content={testInfo.content} />
     </div>

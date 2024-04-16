@@ -1,13 +1,18 @@
-import React from 'react'
+import React from "react";
+import TestBlock from "./TestBlock";
 
-function TestBody({open, content}) {
+function TestBody({ open, content }) {
   return (
     <div
-      className={`${open ? "" : "hidden"} w-full h-fit p-1 pl-8 lg:pl-12 m-1 text-xs lg:text-sm flex items-center text-white rounded-md text-slate-200`}
+      className={`${
+        open ? "" : "hidden"
+      } w-full h-fit p-1 m-1 mb-3 text-xs lg:text-sm flex flex-col items-center text-white rounded-md text-slate-200`}
     >
-      <span className="flex items-center">{content}</span>
+      {content.map((block, index) => (
+        <TestBlock block={block} key={index} />
+      ))}
     </div>
   );
 }
 
-export default TestBody
+export default TestBody;
