@@ -7,7 +7,7 @@ export const InpurBar = () => {
   const [messages, setMessages] = useState<string>('');
 
   return (
-    <div className='bg-gray-600/50 rounded-full w-11/12 flex items-center mb-5'>
+    <div className='bg-gray-600/30 rounded-full w-11/12 flex items-center mb-5'>
       <input
         className=' bg-gray-600/0 w-full h-12 ml-2 px-4 text-white focus:outline-none overflow-hidden text-md'
         value={messages}
