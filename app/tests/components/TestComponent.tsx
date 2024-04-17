@@ -9,8 +9,7 @@ function TestComponents({ testInfo }) {
     setOpen(!open);
   };
   return (
-    <div className="w-full lg:w-4/5 flex flex-col">
-
+    <div className="w-full md:w-4/5 lg:w-3/5 flex flex-col">
       <TestHeader open={open} handleOpen={handleOpen} name={testInfo.name} />
       <TestBody open={open} content={testInfo.content} />
     </div>
