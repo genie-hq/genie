@@ -40,7 +40,7 @@ export const InputBar: React.FC<Props> = ({ addMessage }) => {
         />
 
         <ImagePlusIcon
-        className=' text-white/80 hover:cursor-pointer hover:text-white w-6 h-6' />
+          className=' text-white/80 hover:cursor-pointer hover:text-white w-6 h-6' />
       </div>
 
 

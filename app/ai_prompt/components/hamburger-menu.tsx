@@ -51,7 +51,7 @@ export const HamburgerMenu = () => {
 
                 <Button
                     className='bg-white w-full my-6 text-black hover:bg-slate-200 items-center flex justify-between'
-                    onClick={() => createNewMessage("New Chat")}
+                    onClick={() => createNewMessage("New File")}
                 >
                     Create new prompt
 
@@ -112,7 +112,6 @@ export const HamburgerMenu = () => {
                         </Button>
                     ))}
                 </div>
-
             </div>
 
             <div className='mb-6'>

@@ -79,9 +79,12 @@ export const Page = () => {
 
   return (
     <div className='h-dvh w-dvw flex flex-row bg-black'>
+      {/* Side menu */}
       <HamburgerMenu />
 
       <div className='flex flex-col w-dvw justify-between mt-3'>
+
+        {/* Header */}
         <div className='text-white mx-4 text-xl font-semibold mt-4'>
           <div className='flex flex-row justify-between items-center'>
             GenieX
@@ -89,11 +92,10 @@ export const Page = () => {
           <hr className="mt-4 border-white/10" />
         </div>
 
-        <div className=' overflow-auto'>
-          {/* <MessageView messageList={messageList} /> */}
-          <div ref={messagesEndRef} />
-        </div>
+        {/* Output View */}
+        <div className=' overflow-auto' />
 
+        {/* Config + Input */}
         <div className='flex flex-col items-center w-full'>
           <div className='flex gap-2 items-center'>
             <DropdownMenu title="GitHub Accounts" options={githubAccounts} />
@@ -102,9 +104,9 @@ export const Page = () => {
             <DropdownMenu title="Languages" options={programmingLanguages} />
             <DropdownMenu title="Testing Libraries" options={testingLibraries} />
           </div>
+
           <InputBar addMessage={(message) => setMessageList([...messageList, message])} />
         </div>
-
       </div>
     </div>
   );
