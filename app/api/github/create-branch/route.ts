@@ -1,6 +1,5 @@
 import { Octokit } from '@octokit/rest';
 import { createBranch } from './create-branch';
-import { pushFileToBranch } from '../push-file/push-file';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
