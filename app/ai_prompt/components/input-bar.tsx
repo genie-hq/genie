@@ -2,24 +2,44 @@
 
 import React from 'react'
 import { useState } from 'react'
+import Message from '../scripts/message.class'
 
-export const InpurBar = () => {
-  const [messages, setMessages] = useState<string>('');
+interface Props {
+  addMessage: (message: Message) => void;
+}
+
+export const InputBar: React.FC<Props> = ({ addMessage }) => {
+  const [message, setMessage] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (message.trim() !== '') {
+      const message_class = new Message(message, true)
+      addMessage(message_class);
+      setMessage('');
+    }
+  };
 
   return (
     <div className='bg-gray-600/30 rounded-full w-11/12 flex items-center mb-5'>
       <input
         className=' bg-gray-600/0 w-full h-12 ml-2 px-4 text-white focus:outline-none overflow-hidden text-md'
-        value={messages}
-        onChange={(e) => { setMessages(e.target.value) }}
+        value={message}
+        onChange={handleInputChange}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleSubmit()
+          }
+        }}
         placeholder='Prompt your AI here...'
       />
 
       <button
-        className={`${messages === '' ? 'bg-gray-600' : 'bg-white'} text-white rounded-full m-2 w-8 h-8 p-1 flex items-center justify-center`}
-        onClick={() => {
-          setMessages('')
-        }}
+        className={`${message === '' ? 'bg-gray-600' : 'bg-white'} text-white rounded-full m-2 w-8 h-8 p-1 flex items-center justify-center`}
+        onClick={handleSubmit}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

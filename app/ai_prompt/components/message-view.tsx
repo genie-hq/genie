@@ -3,29 +3,11 @@
 import React from 'react'
 
 import { MessageBubble } from './message-bubble'
-import { useState } from 'react'
+import Message from '../scripts/message.class'
 
-class Message {
-    content: string = 'Hello em'
-    isUser: boolean = true
-
-    constructor(content: string, isUser: boolean) {
-        content = content
-        isUser = isUser
-    }
-}
-
-const sample: Message[] = [
-    { content: 'HD Machine learning pleaseeeee', isUser: true },
-    { content: 'J ok e', isUser: false },
-    { content: 'ngon', isUser: true }
-]
-
-export const MessageView = () => {
-    const [messageList, setMessageList] = useState<Message[]>(sample)
-
+export const MessageView: React.FC<{ messageList: Message[] }> = ({ messageList }) => {
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col my-5'>
             {messageList.map((message) => (
                 <MessageBubble content={message.content} isUserMessage={message.isUser} />
             ))}
