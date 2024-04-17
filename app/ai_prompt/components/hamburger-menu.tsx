@@ -1,6 +1,4 @@
-"use client"
-
-import React, { use } from 'react'
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import Image from 'next/image'

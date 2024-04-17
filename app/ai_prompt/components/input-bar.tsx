@@ -1,5 +1,3 @@
-"use client"
-
 import React from 'react'
 import { useState } from 'react'
 import Message from '../scripts/message.class'
