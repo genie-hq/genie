@@ -53,7 +53,7 @@ export const HamburgerMenu = () => {
                     className='bg-white w-full my-6 text-black hover:bg-slate-200 items-center flex justify-between'
                     onClick={() => createNewMessage("New Chat")}
                 >
-                    Create new chat
+                    Create new prompt
 
                     <Image
                         src={plus_img}
@@ -63,7 +63,7 @@ export const HamburgerMenu = () => {
                 </Button>
 
                 <div className='text-sm mb-2'>
-                    Recent chats
+                    Recent prompts
                 </div>
 
                 <hr className="mb-2  border-white/30" />
