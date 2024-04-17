@@ -10,6 +10,9 @@ import { useRef } from 'react'
 import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu } from './components/dropdown-menu'
+import { RefreshCcw } from 'lucide-react'
+import hmm_cat from './assets/HmmCat.jpg'
+import Image from 'next/image'
 
 const sampleMessages = [
   { content: "Hello! How can I assist you today?", isUser: false },
@@ -63,8 +66,19 @@ const testingLibraries = [
   { value: "pytest", label: "pytest" },
 ];
 
+const testCases = [
+  { value: "test1", label: "Test 1" },
+  { value: "test2", label: "Test 2" },
+  { value: "test3", label: "Test 3" },
+  { value: "test4", label: "Test 4" },
+  { value: "test5", label: "Test 5" },
+];
+
 export const Page = () => {
   const [messageList, setMessageList] = useState<Message[]>(sampleMessages)
+  const [isNewPrompt, setIsNewPrompt] = useState<boolean>(false)
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [selectedPrompt, setSelectedPrompt] = useState<number>(0)
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -73,14 +87,26 @@ export const Page = () => {
     }
   };
 
+  const handleReload = () => {
+    // Toggle the spinning state
+    setIsSpinning(prevState => !prevState);
+    setTimeout(() => {
+      setIsSpinning(prevState => !prevState);
+    }, 1000);
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messageList]);
 
+  useEffect(() => {
+    console.log(selectedPrompt);
+  }, [selectedPrompt]);
+
   return (
     <div className='h-dvh w-dvw flex flex-row bg-black'>
       {/* Side menu */}
-      <HamburgerMenu />
+      <HamburgerMenu onSelect={(index) => setSelectedPrompt(index)} />
 
       <div className='flex flex-col w-dvw justify-between mt-3'>
 
@@ -88,6 +114,11 @@ export const Page = () => {
         <div className='text-white mx-4 text-xl font-semibold mt-4'>
           <div className='flex flex-row justify-between items-center'>
             GenieX
+
+            <Image
+              src={hmm_cat}
+              alt="cat"
+              className="w-10 h-10 rounded-full hover:cursor-pointer" />
           </div>
           <hr className="mt-4 border-white/10" />
         </div>
@@ -96,13 +127,28 @@ export const Page = () => {
         <div className=' overflow-auto' />
 
         {/* Config + Input */}
-        <div className='flex flex-col items-center w-full'>
-          <div className='flex gap-2 items-center'>
-            <DropdownMenu title="GitHub Accounts" options={githubAccounts} />
-            <DropdownMenu title="Git Repositories" options={githubRepos} />
-            <DropdownMenu title="Branches" options={branches} />
-            <DropdownMenu title="Languages" options={programmingLanguages} />
-            <DropdownMenu title="Testing Libraries" options={testingLibraries} />
+        <div className='flex flex-col items-center w-full gap-2'>
+          <div className={isNewPrompt ? '' : 'justify-end w-11/12'}>
+            {isNewPrompt ? (
+              <div className='flex gap-2 items-center'>
+                <DropdownMenu title="GitHub Accounts" options={githubAccounts} />
+                <DropdownMenu title="Git Repositories" options={githubRepos} />
+                <DropdownMenu title="Branches" options={branches} />
+                <DropdownMenu title="Languages" options={programmingLanguages} />
+                <DropdownMenu title="Testing Libraries" options={testingLibraries} />
+              </div>
+            ) : (
+              <div className='flex items-center justify-end gap-2'>
+                <DropdownMenu title="Test case" options={testCases} />
+
+                <Button
+                  onClick={handleReload}>
+                  <span className={`${isSpinning ? 'animate-spin' : ''} `}>
+                    <RefreshCcw className="h-5 w-5" />
+                  </span>
+                </Button>
+              </div>
+            )}
           </div>
 
           <InputBar addMessage={(message) => setMessageList([...messageList, message])} />

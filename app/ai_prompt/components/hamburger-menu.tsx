@@ -5,7 +5,11 @@ import Image from 'next/image'
 import ai_img from '../assets/ai.svg'
 import plus_img from '../assets/plus.svg'
 
-export const HamburgerMenu = () => {
+interface HamburgerMenuProps {
+    onSelect: (index: number) => void;
+}
+
+export const HamburgerMenu = ({ onSelect }: HamburgerMenuProps) => {
     const [messageList, setMessageList] = useState<string[]>([]);
     const [editTitleIndex, setEditTitleIndex] = useState<number>(-1);
     const [newTitle, setNewTitle] = useState<string>('')
@@ -73,6 +77,7 @@ export const HamburgerMenu = () => {
                         <Button
                             key={index}
                             className='w-full my-0.5 px-2 text-white bg-transparent hover:bg-white/20 justify-start'
+                            onClick={() => onSelect(index)}
                         >
                             <div className="truncate flex justify-between w-full items-center">
                                 {editTitleIndex === index ? (

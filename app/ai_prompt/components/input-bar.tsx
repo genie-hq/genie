@@ -17,7 +17,7 @@ export const InputBar: React.FC<Props> = ({ addMessage }) => {
   };
 
   const handleSubmit = () => {
-    if (message.trim() !== '') {
+    if (message !== '') {
       const message_class = new Message(message, true)
       addMessage(message_class);
       setMessage('');
@@ -26,13 +26,14 @@ export const InputBar: React.FC<Props> = ({ addMessage }) => {
 
   return (
     <div className='bg-gray-600/30 rounded-lg w-11/12 flex items-center mb-5 mt-2'>
-      <div className='flex flex-col justify-between ml-1 mt-4 mb-4 px-4 w-full'>
+      <div className='flex flex-col justify-between mt-4 mb-4 px-4 w-full'>
         <textarea
           className=' bg-gray-600/0 w-full h-18 text-white focus:outline-none overflow-hidden text-md resize-none'
           value={message}
           onChange={(e) => handleInputChange(e)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              e.preventDefault()
               handleSubmit()
             }
           }}
