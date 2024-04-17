@@ -1,14 +1,15 @@
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/tutorial/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
+import AuthButton from '../components/AuthButton';
+import ConnectSupabaseSteps from '@/components/tutorial/ConnectSupabaseSteps';
+import SignUpUserSteps from '@/components/tutorial/SignUpUserSteps';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export default async function Index() {
   const canInitSupabaseClient = () => {
     // This function is just for the interactive tutorial.
     // Feel free to remove it once you have Supabase connected.
     try {
-      createClient();
+      createServerComponentClient({ cookies });
       return true;
     } catch (e) {
       return false;
