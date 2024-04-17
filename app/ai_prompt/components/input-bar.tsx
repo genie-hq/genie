@@ -7,16 +7,16 @@ export const InpurBar = () => {
   const [messages, setMessages] = useState<string>('');
 
   return (
-    <div className='bg-black rounded-full mt-3 ml-3 w-80 flex items-center'>
+    <div className='bg-gray-600/50 rounded-full w-11/12 flex items-center mb-5'>
       <input
-        className='bg-black w-full h-8 ml-2 px-4 text-white focus:outline-none overflow-hidden text-sm'
+        className=' bg-gray-600/0 w-full h-12 ml-2 px-4 text-white focus:outline-none overflow-hidden text-md'
         value={messages}
         onChange={(e) => { setMessages(e.target.value) }}
         placeholder='Prompt your AI here...'
       />
 
       <button
-        className={`${messages === '' ? 'bg-gray-600' : 'bg-white'} text-white rounded-full m-2 w-6 h-6 flex items-center justify-center`}
+        className={`${messages === '' ? 'bg-gray-600' : 'bg-white'} text-white rounded-full m-2 w-8 h-8 p-1 flex items-center justify-center`}
         onClick={() => {
           setMessages('')
         }}
@@ -29,7 +29,7 @@ export const InpurBar = () => {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="stroke-black w-6 h-6"
+          className="stroke-black w-8 h-8"
         >
           <path d="M8 10L12 6L16 10" />
           <path d="M12 6V22" />

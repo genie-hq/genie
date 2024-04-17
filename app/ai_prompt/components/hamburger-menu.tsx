@@ -38,7 +38,7 @@ export const HamburgerMenu = () => {
 
     return (
         <div
-            className='bg-black w-64 h-full flex flex-col justify-between px-3 text-white'
+            className=' border-r border-gray-600/50 w-80 h-full flex flex-col justify-between px-5 text-white'
         >
             <div>
                 <div className='flex justify-between font-semibold pt-6 items-center text-xl'>
