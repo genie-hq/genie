@@ -1,6 +1,16 @@
-import React from "react";
-
-function CollapsedLine({ line, open, index, handleOpen, startLine }) {
+function CollapsedLine({
+  line,
+  open,
+  index,
+  handleOpen,
+  startLine,
+}: {
+  line: string;
+  open: boolean;
+  index: number;
+  handleOpen: () => void;
+  startLine: number;
+}) {
   const isHead = index === 0;
   return (
     <div

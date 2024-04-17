@@ -1,12 +1,18 @@
-import React from 'react'
-
-function TestHeader({open, handleOpen, name}) {
+function TestHeader({
+  open,
+  handleOpen,
+  name,
+}: {
+  open: boolean;
+  handleOpen: () => void;
+  name: string;
+}) {
   return (
     <div
       onClick={() => handleOpen()}
       className={`${
         open ? "bg-slate-800" : ""
-      } w-full h-8 lg:h-9 lg:px-4 text-sm lg:text-base flex gap-1 md:gap-2 lg:gap-3 items-center hover:bg-slate-800 text-white rounded-md transition-all text-slate-200 cursor-pointer`}
+      } w-full h-8 lg:h-9 lg:px-4 text-sm lg:text-base flex gap-1 md:gap-2 lg:gap-3 items-center hover:bg-slate-800 rounded-md transition-all text-slate-200 cursor-pointer`}
     >
       <svg
         className={`flex-shrink-0 ${
@@ -40,4 +46,4 @@ function TestHeader({open, handleOpen, name}) {
   );
 }
 
-export default TestHeader
+export default TestHeader;

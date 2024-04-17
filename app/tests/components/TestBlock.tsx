@@ -1,8 +1,15 @@
-import React from "react";
 import { useState } from "react";
 import CollapsedLine from "./CollapsedLine";
 
-function TestBlock({ block }) {
+function TestBlock({
+  block,
+}: {
+  block: {
+    collapsed: boolean;
+    lineContent: string[];
+    startLine: number;
+  };
+}) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(!open);
