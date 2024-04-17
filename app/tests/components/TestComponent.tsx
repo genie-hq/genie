@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TestHeader from "./TestHeader";
 import TestBody from "./TestBody";
 
-function TestComponents({ testInfo }) {
+function TestComponents({
+  testInfo,
+}: {
+  testInfo: {
+    name: string;
+    content: {
+      collapsed: boolean;
+      lineContent: string[];
+      startLine: number;
+    }[];
+  };
+}) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     // alert(open);
