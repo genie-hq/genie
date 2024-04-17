@@ -25,7 +25,7 @@ export async function GET(request: Request & { access_token: string;
     auth: githubAccessToken, 
   });
 
-  createBranch(octokit, githubRepoUserName, githubRepoName, baseBranch, newBranch);
+  await createBranch(octokit, githubRepoUserName, githubRepoName, baseBranch, newBranch);
 
   return NextResponse.redirect(requestUrl.origin, {
     status: 301,
