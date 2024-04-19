@@ -1,18 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest,NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
 
-interface Params {
-  params: {
-    username: string;
-    repo: string;
-    branch: string;
-  };
-}
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { username, repo, branch }: { username: string; repo: string; branch: string } = body;
 
-export async function GET(
-  _: Request,
-  { params: { username, repo, branch } }: Params
-) {
+  console.log(username, repo, branch);
   const workflows = await getWorkflows({
     username,
     repository: repo,
