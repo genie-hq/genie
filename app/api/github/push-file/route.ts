@@ -1,6 +1,6 @@
 import { Octokit } from 'octokit';
-import { pushFileToBranch } from './push-file';
 import { NextResponse } from 'next/server';
+import { pushFileToBranch } from '../helpers';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
