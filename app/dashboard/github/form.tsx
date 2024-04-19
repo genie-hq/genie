@@ -48,11 +48,11 @@ export default function GithubForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: 'vhpx',
+      username: 'genie-hq',
       repository: 'genie',
       reference_branch: '',
       target_branch: '',
-      path: '/__tests__/new-test.test.tsx',
+      path: '/__tests__/new.test.tsx',
       content:
         'import { describe, it, expect } from "vitest";\n\ndescribe("test", () => { it("works", () => { expect(true).toBe(true); }); });',
       commit_message: 'Add tests',
