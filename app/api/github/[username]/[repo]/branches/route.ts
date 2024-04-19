@@ -39,4 +39,5 @@ async function getBranches({
     );
     throw error; // re-throw the error to be handled by the caller
   }
+
 }

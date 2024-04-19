@@ -20,7 +20,6 @@ const buildGoogleGenAIPrompt = (messages: Message[]) => ({
 });
 
 export async function POST(req: Request) {
-  // Extract the `prompt` from the body of the request
   const { messages } = await req.json();
 
   const geminiStream = await genAI
