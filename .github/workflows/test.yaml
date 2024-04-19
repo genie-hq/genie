@@ -2,10 +2,6 @@ name: Test
 
 on:
   push:
-    branches: ["main", "production"]
-  pull_request:
-    types: [opened, synchronize]
-    branches-ignore: ["main", "production"]
 
 jobs:
   build:
@@ -24,7 +20,7 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4

@@ -1,21 +1,22 @@
-import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { Button } from "./ui/button";
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { Button } from './ui/button';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export default async function AuthButton() {
-  const supabase = createClient();
+  const supabase = createServerComponentClient({ cookies });
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const signOut = async () => {
-    "use server";
+    'use server';
 
-    const supabase = createClient();
+    const supabase = createServerComponentClient({ cookies });
     await supabase.auth.signOut();
-    return redirect("/login");
+    return redirect('/login');
   };
 
   return user ? (
