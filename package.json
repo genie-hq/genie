@@ -22,6 +22,7 @@
     "sb:typegen": "pnpm dlx supabase gen types typescript --local --schema public > types/supabase.ts && prettier --write types/supabase.ts"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.7.1",
     "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -50,9 +51,11 @@
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.7",
-    "@supabase/ssr": "latest",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/supabase-js": "latest",
     "@vercel/analytics": "^1.2.2",
+    "ai": "^3.0.23",
     "autoprefixer": "10.4.19",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -69,8 +72,6 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.51.3",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
-    "@supabase/auth-helpers-react": "^0.5.0",
     "react-resizable-panels": "^2.0.17",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.2",
@@ -84,7 +85,7 @@
     "@types/react": "18.2.78",
     "@types/react-dom": "18.2.25",
     "encoding": "^0.1.13",
-    "supabase": "^1.159.1",
+    "supabase": "^1.161.0",
     "typescript": "^5.4.5",
     "vitest": "^1.5.0"
   }

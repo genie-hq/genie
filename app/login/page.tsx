@@ -1,4 +1,5 @@
-import LoginForm from "./form";
+import { Suspense } from 'react';
+import LoginForm from './form';
 
 export default function Login() {
   return (
@@ -7,7 +8,9 @@ export default function Login() {
       <p className="text-center text-7 text-gray-500">
         Welcome to Genie, AI-powered Test Generation.
       </p>
-      <LoginForm />
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
