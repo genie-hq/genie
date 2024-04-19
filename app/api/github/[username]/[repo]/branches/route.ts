@@ -18,7 +18,7 @@ const octokit = new Octokit({
   auth: githubAccessToken,
 });
 
-export async function getBranches({
+async function getBranches({
   username: owner,
   repository: repo,
 }: {
