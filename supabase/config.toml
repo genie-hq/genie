@@ -71,9 +71,9 @@ file_size_limit = "50MiB"
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "http://127.0.0.1:6868"
+site_url = "http://localhost:6868"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["https://127.0.0.1:6868", "https://127.0.0.1:6868/auth/callback", "http://localhost:54321/auth/v1/callback"]
+additional_redirect_urls = ["https://localhost:6868", "https://localhost:6868/auth/callback", "http://localhost:54321/auth/v1/callback"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # If disabled, the refresh token will never expire.
@@ -95,7 +95,7 @@ enable_signup = true
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
-enable_confirmations = true
+enable_confirmations = false
 
 # Uncomment to customize email template
 # [auth.email.template.invite]
