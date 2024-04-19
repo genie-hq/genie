@@ -1,4 +1,4 @@
-import { Octokit } from '@octokit/rest';
+import { Octokit } from 'octokit';
 import { pushFileToBranch } from './push-file';
 import { NextResponse } from 'next/server';
 

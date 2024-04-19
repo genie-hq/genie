@@ -1,4 +1,4 @@
-import { Octokit } from '@octokit/rest';
+import { Octokit } from 'octokit';
 
 export async function createBranch(
   octokit: Octokit,
@@ -13,14 +13,14 @@ export async function createBranch(
       data: {
         object: { sha: latestCommitSha },
       },
-    } = await octokit.git.getRef({
+    } = await octokit.rest.git.getRef({
       owner,
       repo,
       ref: `heads/${baseBranch}`,
     });
 
     // Create a new branch at the latest commit of the base branch
-    await octokit.git.createRef({
+    await octokit.rest.git.createRef({
       owner,
       repo,
       ref: `refs/heads/${newBranch}`,

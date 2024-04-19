@@ -1,4 +1,4 @@
-import { Octokit } from '@octokit/rest';
+import { Octokit } from 'octokit';
 
 export async function pushFileToBranch(
   octokit: Octokit,
@@ -13,7 +13,7 @@ export async function pushFileToBranch(
     // Create a blob with the file content
     const {
       data: { sha: blobSha },
-    } = await octokit.git.createBlob({
+    } = await octokit.rest.git.createBlob({
       owner,
       repo,
       content: fileContent,
@@ -25,7 +25,7 @@ export async function pushFileToBranch(
       data: {
         object: { sha: latestCommitSha },
       },
-    } = await octokit.git.getRef({
+    } = await octokit.rest.git.getRef({
       owner,
       repo,
       ref: `heads/${branch}`,
@@ -34,7 +34,7 @@ export async function pushFileToBranch(
     // Create a tree with the new file
     const {
       data: { sha: treeSha },
-    } = await octokit.git.createTree({
+    } = await octokit.rest.git.createTree({
       owner,
       repo,
       base_tree: latestCommitSha,
@@ -51,7 +51,7 @@ export async function pushFileToBranch(
     // Create a new commit
     const {
       data: { sha: newCommitSha },
-    } = await octokit.git.createCommit({
+    } = await octokit.rest.git.createCommit({
       owner,
       repo,
       message: commitMessage,
@@ -60,7 +60,7 @@ export async function pushFileToBranch(
     });
 
     // Update the branch reference
-    await octokit.git.updateRef({
+    await octokit.rest.git.updateRef({
       owner,
       repo,
       ref: `heads/${branch}`,
