@@ -1,13 +1,36 @@
 import { Octokit } from 'octokit';
 
-export async function createBranch(
-  octokit: Octokit,
-  owner: string,
-  repo: string,
-  baseBranch: string,
-  newBranch: string
-) {
+const githubAccessToken = process.env.GITHUB_ACCESS_TOKEN;
+const octokit = new Octokit({
+  auth: githubAccessToken,
+});
+
+export async function createBranch({
+  username: owner,
+  repository: repo,
+  baseBranch,
+  newBranch,
+}: {
+  username: string;
+  repository: string;
+  baseBranch: string;
+  newBranch: string;
+}) {
   try {
+    // Try to get the reference to the new branch
+    try {
+      const { data: branch } = await octokit.rest.git.getRef({
+        owner,
+        repo,
+        ref: `heads/${newBranch}`,
+      });
+
+      console.log(`Branch '${newBranch}' already exists.`);
+      return branch;
+    } catch (error: any) {
+      // Ignore the error as it means the branch doesn't exist
+    }
+
     // Get the latest commit SHA of the base branch
     const {
       data: {
@@ -20,7 +43,7 @@ export async function createBranch(
     });
 
     // Create a new branch at the latest commit of the base branch
-    await octokit.rest.git.createRef({
+    const { data: branch } = await octokit.rest.git.createRef({
       owner,
       repo,
       ref: `refs/heads/${newBranch}`,
@@ -28,24 +51,37 @@ export async function createBranch(
     });
 
     console.log(`Branch '${newBranch}' created successfully.`);
+    return branch;
   } catch (error: any) {
     console.error(
       'Error creating branch:',
       error.response?.data?.message || error.message || error
     );
+    throw error; // re-throw the error to be handled by the caller
   }
 }
 
-export async function pushFileToBranch(
-  octokit: Octokit,
-  owner: string,
-  repo: string,
-  branch: string,
-  filePath: string,
-  fileContent: string,
-  commitMessage: string
-) {
+export async function upsertTestFile({
+  username: owner,
+  repository: repo,
+  branch,
+  filePath,
+  fileContent,
+  commitMessage,
+  latestCommitSha,
+}: {
+  username: string;
+  repository: string;
+  branch: string;
+  filePath: string;
+  fileContent: string;
+  commitMessage: string;
+  latestCommitSha: string;
+}) {
   try {
+    // Remove leading slash from filePath if it exists
+    filePath = filePath.startsWith('/') ? filePath.slice(1) : filePath;
+
     // Create a blob with the file content
     const {
       data: { sha: blobSha },
@@ -54,17 +90,6 @@ export async function pushFileToBranch(
       repo,
       content: fileContent,
       encoding: 'utf-8',
-    });
-
-    // Get the latest commit SHA of the branch
-    const {
-      data: {
-        object: { sha: latestCommitSha },
-      },
-    } = await octokit.rest.git.getRef({
-      owner,
-      repo,
-      ref: `heads/${branch}`,
     });
 
     // Create a tree with the new file
@@ -106,10 +131,13 @@ export async function pushFileToBranch(
     console.log(
       `File '${filePath}' pushed to branch '${branch}' successfully.`
     );
+
+    return newCommitSha;
   } catch (error: any) {
     console.error(
       'Error pushing file to branch:',
       error.response?.data?.message || error.message || error
     );
+    throw error; // re-throw the error to be handled by the caller
   }
 }
