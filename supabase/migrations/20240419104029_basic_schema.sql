@@ -481,4 +481,4 @@ grant truncate on table "public"."test_libraries" to "service_role";
 
 grant update on table "public"."test_libraries" to "service_role";
 
-
+alter table "public"."users" alter column "display_name" drop not null;
