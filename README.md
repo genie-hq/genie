@@ -1,6 +1,6 @@
 <a href="https://intelligenie.vercel.app/">
   <img alt="Genie Main Page" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Genie</h1>
+  <h1 align="center">Genie 🤖</h1>
 </a>
 
 <p align="center">
@@ -15,14 +15,14 @@
 </p>
 <br/>
 
-## Developers
+## Developers 👩‍💻
 
 - Võ Hoàng Phúc <a href="https://github.com/vhpx" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 - Seokyung (Lucia) Kim <a href="https://github.com/lluciiiia" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a> 
 - Lương Quang Huy <a href="https://github.com/WMumei" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 - Đoàn Hữu Quốc <a href="https://github.com/Mudoker" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 
-## Features
+## Features  🌟
 
 - **Streamlined Test Case Creation**: Effortlessly create new test cases by providing prompts to an AI-powered system, eliminating the need for manual test case creation.
 
@@ -32,7 +32,7 @@
 
 - **Version Control and History**: Users can conveniently access the history of different versions of test files, empowering them to review past iterations and generate new versions as needed. This feature enhances transparency and facilitates collaboration by providing insights into the evolution of test cases over time.
 
-## Getting Started
+## Getting Started 🚀
 
 To start using Genie, follow these simple steps:
 
@@ -44,6 +44,6 @@ To start using Genie, follow these simple steps:
 
 4. **Access Version History**: Explore the version history of test files to review past iterations and generate new versions as necessary, ensuring continuous improvement and quality assurance.
 
-## Feedback and issues
+## Feedback and issues 📝
 
 Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
