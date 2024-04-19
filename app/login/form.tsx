@@ -95,7 +95,7 @@ export default function LoginForm() {
 
     if (res.ok) {
       const nextUrl = searchParams.get('nextUrl');
-      router.push(nextUrl ?? '/');
+      router.push(nextUrl ?? '/dashboard');
       router.refresh();
     } else {
       setLoading(false);
