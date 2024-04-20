@@ -29,11 +29,13 @@ export async function generateTestFile(messages: Message[]) {
   const systemPrompt =
     'Create 5 test cases in TypeScript using vitest based on the following requirements. Provide the full file.';
 
-  // Map messages to concatenate each message's content with the system prompt
-  const messagesWithPrompt = messages.map((message: any) => ({
-    role: message.role,
-    content: `${systemPrompt}\n${message.content}`,
-  }));
+  const messagesWithPrompt = [
+    {
+      role: 'SYSTEM',
+      content: systemPrompt,
+    },
+    ...messages,
+  ];
 
   const geminiStream = await genAI
     .getGenerativeModel({ model: 'gemini-pro' })
