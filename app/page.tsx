@@ -5,7 +5,6 @@ import { InputBar } from './ai_prompt/components/input-bar';
 import Message from './ai_prompt/scripts/message.class';
 import { useEffect, useState, useRef } from 'react';
 import { DropdownMenu } from './ai_prompt/components/dropdown-menu';
-import { MessageView } from './ai_prompt/components/message-view';
 import { useChat } from 'ai/react';
 import {
   branches,
@@ -16,6 +15,7 @@ import {
   testVersions,
   testingLibraries,
 } from '@/data/root-page-data';
+import { ChatMessage } from './ai_prompt/components/chat-message';
 
 export default function Page() {
   const [messageList, setMessageList] = useState<Message[]>(sampleMessages);
@@ -45,16 +45,22 @@ export default function Page() {
 
       <div className="flex flex-col w-full justify-between">
         {/* Output View */}
-        <div className=' overflow-auto'>
-          <MessageView messageList={messages} />
+        <div className="p-4 overflow-auto">
+          {messages.map((message, index) => (
+            <ChatMessage message={message} key={index} />
+          ))}
           <div ref={messagesEndRef} />
         </div>
 
         {/* Config + Input */}
-        <div className="flex flex-col items-center w-full gap-2">
-          <div className={isNewPrompt ? '' : 'justify-end w-full px-4'}>
+        <div className="flex flex-col items-end w-full gap-2 relative">
+          <div
+            className={`${
+              isNewPrompt ? '' : 'justify-end w-full'
+            } px-4 absolute -top-12`}
+          >
             {!isNewPrompt ? (
-              <div className="grid grid-cols-5 gap-2 items-center">
+              <div className="grid grid-cols-5 gap-2 items-end">
                 <DropdownMenu
                   title="GitHub Account"
                   options={githubAccounts}
@@ -82,7 +88,7 @@ export default function Page() {
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex items-end justify-end gap-2">
                 <DropdownMenu title="Default version" options={testVersions} />
               </div>
             )}
