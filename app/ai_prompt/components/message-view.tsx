@@ -1,5 +1,4 @@
 import { MessageBubble } from './message-bubble';
-import Message from '../scripts/message.class';
 import { FC } from 'react';
 
 export const MessageView: FC<{ messageList: any[] }> = ({

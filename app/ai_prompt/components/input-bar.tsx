@@ -1,8 +1,6 @@
 import { FC, FormEvent, useState } from 'react';
-import Message from '../scripts/message.class';
 import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useEffect } from 'react';
 
 interface Props {
   input: string;

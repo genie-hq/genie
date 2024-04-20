@@ -4,9 +4,7 @@ import { HamburgerMenu } from './ai_prompt/components/hamburger-menu';
 import { InputBar } from './ai_prompt/components/input-bar';
 import Message from './ai_prompt/scripts/message.class';
 import { useEffect, useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
 import { DropdownMenu } from './ai_prompt/components/dropdown-menu';
-import { RefreshCcw } from 'lucide-react';
 import { MessageView } from './ai_prompt/components/message-view';
 import { useChat } from 'ai/react';
 
@@ -62,7 +60,7 @@ const testVersions = [{ value: 'v0', label: 'Version 0' }];
 
 export default function Page() {
   const [messageList, setMessageList] = useState<Message[]>(sampleMessages);
-  const [isNewPrompt, setIsNewPrompt] = useState<boolean>(false);
+  const [isNewPrompt, setIsNewPrompt] = useState<boolean>(true);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -109,7 +107,7 @@ export default function Page() {
         {/* Config + Input */}
         <div className="flex flex-col items-center w-full gap-2">
           <div className={isNewPrompt ? '' : 'justify-end w-full px-4'}>
-            {!isNewPrompt ? (
+            {isNewPrompt ? (
               <div className="grid grid-cols-5 gap-2 items-center">
                 <DropdownMenu
                   title="GitHub Account"
