@@ -1,9 +1,13 @@
-import { NextRequest,NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { username, repo, branch }: { username: string; repo: string; branch: string } = body;
+  const {
+    username,
+    repo,
+    branch,
+  }: { username: string; repo: string; branch: string } = body;
 
   console.log(username, repo, branch);
   const workflows = await getWorkflows({
@@ -29,7 +33,6 @@ async function getWorkflows({
   branch: string;
 }) {
   try {
-    // Retrieve the latest workflow run
     const { data: workflowRuns } =
       await octokit.rest.actions.listWorkflowRunsForRepo({
         owner: owner,
@@ -37,21 +40,43 @@ async function getWorkflows({
         branch: branch,
       });
     const latestWorkflowRunId = workflowRuns.workflow_runs[0].id;
-    console.log('lastWorkflowRunId: ', latestWorkflowRunId);
 
-    // Get the details of the latest workflow run
     const { data: workflowRun } = await octokit.rest.actions.getWorkflowRun({
       owner,
       repo,
       run_id: latestWorkflowRunId,
     });
 
-    return workflowRun.conclusion;
+    if (workflowRun.conclusion === 'failure') {
+      const logs = await getWorkflowLogs(owner, repo, latestWorkflowRunId);
+      return { conclusion: workflowRun.conclusion, logs };
+    }
+
+    return { conclusion: workflowRun.conclusion };
   } catch (error: any) {
-    console.error(
-      'Error getting branches:',
-      error.response?.data?.message || error.message || error
-    );
+    throw error;
+  }
+}
+
+async function getWorkflowLogs(owner: string, repo: string, runId: number) {
+  try {
+    const { data: jobs } = await octokit.rest.actions.listJobsForWorkflowRun({
+      owner,
+      repo,
+      run_id: runId,
+    });
+
+    const logsResponse =
+      await octokit.rest.actions.downloadJobLogsForWorkflowRun({
+        owner,
+        repo,
+        job_id: jobs.jobs[0].id,
+      });
+
+    const logs = logsResponse.data ? logsResponse.data : null;
+
+    return logs;
+  } catch (error: any) {
     throw error;
   }
 }
