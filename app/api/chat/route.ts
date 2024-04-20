@@ -8,9 +8,7 @@ export const runtime = 'edge';
 
 // convert messages from the Vercel AI SDK Format to the format
 // that is expected by the Google GenAI SDK
-export const buildGoogleGenAIPrompt = (
-  messages: Message[]
-) => ({
+export const buildGoogleGenAIPrompt = (messages: Message[]) => ({
   contents: messages
     .filter(
       (message) => message.role === 'user' || message.role === 'assistant'
@@ -24,19 +22,22 @@ export const buildGoogleGenAIPrompt = (
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const systemPrompt = "Create 5 test cases in TypeScript using vitest based on the following requirements. Provide the full file.";
-  
+  return generateTestFile(messages);
+}
+
+export async function generateTestFile(messages: Message[]) {
+  const systemPrompt =
+    'Create 5 test cases in TypeScript using vitest based on the following requirements. Provide the full file.';
+
   // Map messages to concatenate each message's content with the system prompt
   const messagesWithPrompt = messages.map((message: any) => ({
     role: message.role,
-    content: `${systemPrompt}\n${message.content}`
+    content: `${systemPrompt}\n${message.content}`,
   }));
 
   const geminiStream = await genAI
     .getGenerativeModel({ model: 'gemini-pro' })
-    .generateContentStream(
-      buildGoogleGenAIPrompt(messagesWithPrompt)
-    );
+    .generateContentStream(buildGoogleGenAIPrompt(messagesWithPrompt));
 
   const stream = GoogleGenerativeAIStream(geminiStream);
 
@@ -48,14 +49,13 @@ export async function regenerateTestFile(
   previousTestFile: string,
   failureErrors: string
 ) {
-  const systemPrompt = "Create 5 different test cases in TypeScript using vitest based on the requirements for test cases, the previous test file, and the errors we encountered in the previous version. Provide the full file.";
+  const systemPrompt =
+    'Create 5 different test cases in TypeScript using vitest based on the requirements for test cases, the previous test file, and the errors we encountered in the previous version. Provide the full file.';
   const finalMsg = `${systemPrompt}\n//These were the requirements for the test cases.\n${prevUserPrompt}\n//This was the previous test file.\n${previousTestFile}\nThese were the errors we encountered in the previous test file:${failureErrors}`;
   const geminiStream = await genAI
     .getGenerativeModel({ model: 'gemini-pro' })
     .generateContentStream(
-      buildGoogleGenAIPrompt([
-        { role: "assistant", content: finalMsg }
-      ])
+      buildGoogleGenAIPrompt([{ role: 'assistant', content: finalMsg }])
     );
 
   const stream = GoogleGenerativeAIStream(geminiStream);
