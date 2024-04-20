@@ -11,9 +11,7 @@ export const MessageBubble = ({ content = 'hello', isUserMessage = false }) => {
       }}
     >
       <div
-        className={`flex text-white items-center gap-2 ${
-          isUserMessage ? 'mr-4' : 'ml-4'
-        }`}
+        className={`flex items-center gap-2 ${isUserMessage ? 'mr-4' : 'ml-4'}`}
       >
         <Image
           src={isUserMessage ? hmm_cat : bao_it}
@@ -26,7 +24,7 @@ export const MessageBubble = ({ content = 'hello', isUserMessage = false }) => {
       </div>
 
       <div
-        className={`mx-4 my-4 p-3 rounded-lg text-white bg-gray-600/50`}
+        className={`mx-4 my-4 p-3 rounded-lg bg-gray-600/50`}
         style={{ alignSelf: isUserMessage ? 'flex-end' : 'flex-start' }}
       >
         {content}
