@@ -1,15 +1,20 @@
-import React from 'react';
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import Image from 'next/image';
 import ai_img from '../assets/ai.svg';
 import { Pencil, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface HamburgerMenuProps {
+  disabled?: boolean;
   onSelect: (index: number) => void;
 }
 
-export const HamburgerMenu = ({ onSelect }: HamburgerMenuProps) => {
+export const HamburgerMenu = ({ disabled,onSelect }: HamburgerMenuProps) => {
+  const router = useRouter();
+
   const [messageList, setMessageList] = useState<string[]>([]);
   const [editTitleIndex, setEditTitleIndex] = useState<number>(-1);
   const [newTitle, setNewTitle] = useState<string>('');
@@ -40,7 +45,9 @@ export const HamburgerMenu = ({ onSelect }: HamburgerMenuProps) => {
       <div>
         <Button
           className="w-full items-center flex justify-between"
-          onClick={() => createNewMessage('New File')}
+          // onClick={() => createNewMessage('New File')}
+          onClick={() => router.push('/new')}
+          disabled={disabled}
         >
           Create new prompt
           <Plus className="w-4 h-4" />
