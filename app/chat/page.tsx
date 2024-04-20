@@ -19,6 +19,7 @@ export default function Chat() {
           value={input}
           placeholder="Say something..."
           onChange={handleInputChange}
+          className="bg-foreground/5 text-foreground border rounded p-2 text-xl m-8"
         />
       </form>
     </div>

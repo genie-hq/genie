@@ -27,7 +27,7 @@ export const InputBar: FC<Props> = ({ addMessage }) => {
       <div className="bg-foreground/5 border rounded-lg p-2 flex items-center">
         <div className="flex flex-col justify-between w-full">
           <textarea
-            className=" bg-gray-600/0 w-full h-18 text-white focus:outline-none overflow-hidden text-md resize-none"
+            className=" bg-gray-600/0 w-full h-18 focus:outline-none overflow-hidden text-md resize-none"
             value={message}
             onChange={(e) => handleInputChange(e)}
             onKeyDown={(e) => {
