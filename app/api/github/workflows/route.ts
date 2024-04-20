@@ -23,7 +23,7 @@ const octokit = new Octokit({
   auth: githubAccessToken,
 });
 
-async function getWorkflows({
+export async function getWorkflows({
   username: owner,
   repository: repo,
   branch: branch,
