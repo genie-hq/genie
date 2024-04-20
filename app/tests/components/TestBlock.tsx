@@ -1,5 +1,5 @@
-import { useState } from "react";
-import CollapsedLine from "./CollapsedLine";
+import { useState } from 'react';
+import CollapsedLine from './CollapsedLine';
 
 function TestBlock({
   block,
@@ -27,13 +27,13 @@ function TestBlock({
           />
         ))
       ) : (
-        <div className="w-full flex gap-1 lg:gap-1.5 hover:bg-gray-800">
-          <a className="text-slate-300 underline hover:text-blue-500 cursor-pointer flex justify-end w-6 md:w-8 lg:w-10 shrink-0">
+        <div className="w-full flex gap-1 lg:gap-1.5 hover:bg-foreground/5">
+          <a className="opacity-70 underline hover:text-blue-500 cursor-pointer flex justify-end w-6 md:w-8 lg:w-10 shrink-0">
             {block.startLine}
           </a>
           <span
             className={`${
-              block.collapsed ? "cursor-pointer" : ""
+              block.collapsed ? 'cursor-pointer' : ''
             } flex items-center w-full `}
           >
             {block.lineContent}
