@@ -1,16 +1,15 @@
 import { MessageBubble } from './message-bubble';
-import Message from '../scripts/message.class';
 import { FC } from 'react';
 
-export const MessageView: FC<{ messageList: Message[] }> = ({
+export const MessageView: FC<{ messageList: any[] }> = ({
   messageList,
 }) => {
   return (
     <div className="flex flex-col my-5">
-      {messageList.map((message) => (
+      {messageList.map((m) => (
         <MessageBubble
-          content={message.content}
-          isUserMessage={message.isUser}
+          content={m.content}
+          isUserMessage={m.role === 'user'}
         />
       ))}
     </div>

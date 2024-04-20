@@ -1,5 +1,6 @@
 'use client';
 
+import { useChat } from 'ai/react';
 import { HamburgerMenu } from '../ai_prompt/components/hamburger-menu';
 import { InputBar } from '../ai_prompt/components/input-bar';
 import Message from '../ai_prompt/scripts/message.class';
@@ -16,6 +17,8 @@ import {
 } from '@/data/root-page-data';
 
 export default function Page() {
+  const { messages, input, handleInputChange, handleSubmit } = useChat();
+
   const [messageList, setMessageList] = useState<Message[]>(sampleMessages);
   const [isNewPrompt, setIsNewPrompt] = useState<boolean>(false);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -78,7 +81,9 @@ export default function Page() {
           </div>
 
           <InputBar
-            addMessage={(message) => setMessageList([...messageList, message])}
+            input={input}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
           />
         </div>
       </div>

@@ -57,7 +57,7 @@ export function DropdownMenu({ title, options, className }: DropdownMenuProps) {
                 <CommandItem
                   key={option.value}
                   value={option.value}
-                  onSelect={(currentValue) => {
+                  onSelect={(currentValue: any) => {
                     setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
                   }}
