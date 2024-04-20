@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   let refinedTestFile = ''; // TODO: Implement refinement logic
 
   // Save initial test file to database
-  // TODO: Implement saving logic
+  // TODO: Implement saving logic (both testfile & version)
 
   const branch = await createBranch({
     username: repoOwner,
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     refinedTestFile = ''; // Implement refinement logic
 
     // Save regenerated test file to database
-    // TODO: Implement saving logic
+    // TODO: Implement saving logic (update testfile & create a new version)
 
     // Upsert regenerated test file
     await upsertTestFile({
@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
     failures++;
   }
 
+  // TODO: return a list of versions as well?
   if (isSuccessful) {
     return NextResponse.json({
       isSuccessful: isSuccessful,
