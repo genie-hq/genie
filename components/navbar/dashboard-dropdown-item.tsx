@@ -11,7 +11,7 @@ export default function DashboardDropdownItem() {
     <>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
-        <Link href="/dashboard">
+        <Link href="/files">
           <DropdownMenuItem className="cursor-pointer">
             <ActivitySquare className="mr-2 h-4 w-4" />
             <span>Dashboard</span>
