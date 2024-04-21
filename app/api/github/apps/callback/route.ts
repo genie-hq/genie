@@ -10,14 +10,9 @@ export async function GET(req: Request) {
   const urlParams = new URLSearchParams(req.url.split('?')[1]);
   const installationId = urlParams.get('installation_id');
 
-  const error = urlParams.get('error');
-  const errorDescription = urlParams.get('error_description');
-
   // Handle installation failure
   if (installationId == null) {
-    return NextResponse.redirect(
-      `https://intelligenie.vercel.app/error`
-    );
+    return NextResponse.redirect(`https://intelligenie.vercel.app/error`);
   }
 
   // Retrieve the userId
@@ -27,10 +22,13 @@ export async function GET(req: Request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // TODO: Should we redirect to login? and come back?
+ 
   if (!user) return new Response('Unauthorized', { status: 401 });
 
   const userId = user.id;
+
+  console.log("installationId in callback: ", installationId);
+  console.log("userId in callback: ", userId);
 
   // Obtain installation access token using installation ID
   const accessToken = await getAccessToken(installationId);
