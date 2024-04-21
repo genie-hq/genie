@@ -1,5 +1,3 @@
-import { Octokit } from 'octokit';
-
 export async function createBranch({
   octokit: octokit,
   username: owner,
