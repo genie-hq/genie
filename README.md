@@ -8,10 +8,11 @@
 </p>
 
 <p align="center">
-<a href="#developers"><strong>Developers</strong></a> ·
-  <a href="#features"><strong>Features</strong></a> ·  
-  <a href="#getting-started"><strong>Getting Started</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
+<a href="##developers"><strong>Developers</strong></a> ·
+  <a href="##features"><strong>Features</strong></a> ·  
+  <a href="##getting-started"><strong>Getting Started</strong></a> ·
+   <a href="##how-to-run-locally"><strong>How to run locally</strong></a> ·
+  <a href="##feedback-and-issues"><strong>Feedback and issues</strong></a>
 </p>
 <br/>
 
@@ -43,6 +44,35 @@ To start using Genie, follow these simple steps:
 3. **Monitor Test Results**: Keep track of test results and receive notifications in case of failures, enabling prompt intervention to maintain the integrity of your codebase.
 
 4. **Access Version History**: Explore the version history of test files to review past iterations and generate new versions as necessary, ensuring continuous improvement and quality assurance.
+
+## How to run locally 💻
+This is a Supabase Open Source Hackathon 2024 project! Feel free to contribute to our open source project, Genie!
+
+To run the project locally, follow these steps:
+
+1. Clone the Repository: 
+   - Clone the Genie repository to your local machine using Git.
+
+2. Install Dependencies:
+   - Navigate into the cloned directory.
+   - Run `npm install` or `yarn install` to install the project dependencies.
+
+3. Environment Variables:
+   - Rename the file `env.example` to `env.local`.
+   - Run `pnpm devx` to generate some of the variables.
+   - Manually add `BOT_APP` and `BOT_PRIVATE_KEY` from the Genie Bot.
+
+4. Run the Project:
+   - Ensure Docker Desktop application is running.
+   - Run `pnpm sb:start`.
+   - Once the dependencies are installed and Supabase is set up, run `npm run dev` or `yarn dev` to start the development server locally.
+
+5. Access Locally:
+   - Once the server is running, open your web browser and go to `http://localhost:6868` to access the locally running Genie application.
+   - For logging in, obtain the OTP code from `http://localhost:54324/`. Go to the Monitor section to get your latest OTP code.
+   - To view the Supabase-based database, navigate to `http://localhost:54323/`.
+
+Now you should have the Genie project running locally on your machine, ready for development or testing.
 
 ## Feedback and issues 📝
 
