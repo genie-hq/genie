@@ -6,7 +6,7 @@ import coding_img from './coding.png';
 
 function page() {
   return (
-    <div className='w-full h-full flex flex-col justify-center items-center'>
+    <div className='w-full h-full flex flex-col pt-20 items-center'>
       <div className="flex w-full items-center justify-center gap-2">
         <div className="flex flex-col w-full md:w-1/2 md:pl-16 gap-4 md:gap-8">
           <h1 className='text-lg md:text-2xl font-semibold'>
@@ -24,11 +24,7 @@ function page() {
             <div>
               "Skip test file creation. Genie automates it.
             </div>
-              Focus on bigger tasks."
-
-            <div className='font-semibold text-sm mr-6 mt-4'>
-              Genie Team - 2024
-            </div>
+            Focus on bigger tasks."
 
             <div className='font-bold text-sm mr-6'>
             </div>
@@ -52,34 +48,6 @@ function page() {
           width={450}
           alt="Decorative"
         />
-      </div>
-
-      <div className='flex flex-col items-center justify-center'>
-        <div className='font-semibold opacity-60 text-lg'>
-          Trusted By
-        </div>
-
-        <div className='flex gap-14 justify-center items-center mt-8'>
-          <div>
-            <Image
-              src={bright_logo}
-              height={70}
-              width={70}
-              alt="sun"
-            />
-          </div>
-
-
-          <div className='w-14 h-14'>
-            <Image
-              src={tutu3ru_logo}
-              height={70}
-              width={70}
-              alt="sun"
-            />
-          </div>
-
-        </div>
       </div>
     </div>
 
