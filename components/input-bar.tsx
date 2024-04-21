@@ -1,6 +1,8 @@
 import { FC, useState } from 'react';
 import { CreateTestFileDialog } from './create-test-file-dialog';
 import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { RefreshCcw } from 'lucide-react';
 
 interface Props {
   file?: {
@@ -36,11 +38,17 @@ export const InputBar: FC<Props> = ({ file, input, handleInputChange }) => {
           }
         />
 
-        <CreateTestFileDialog
-          open={opened}
-          onOpenChange={setOpened}
-          prompt={input}
-        />
+        {file ? (
+          <Button type="submit" variant="ghost" size="icon" disabled={!input}>
+            <RefreshCcw className="w-6 h-6" />
+          </Button>
+        ) : (
+          <CreateTestFileDialog
+            open={opened}
+            onOpenChange={setOpened}
+            prompt={input}
+          />
+        )}
       </form>
     </div>
   );

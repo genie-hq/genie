@@ -26,7 +26,7 @@ export default async function Page({
   const fileQuery = supabase
     .from('test_file_versions')
     .select(
-      'version_id:id, ...test_files(id, name, github_username, repository, branch, target_branch, test_library, test_framework, file_path), code, prompt, created_at'
+      'version_id:id, pushed, ...test_files(id, name, github_username, repository, branch, target_branch, test_library, test_framework, file_path), code, prompt, created_at'
     )
     .eq('test_file_id', fileId);
 

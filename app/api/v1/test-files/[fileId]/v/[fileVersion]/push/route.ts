@@ -5,25 +5,20 @@ import {
   getLatestCommitSHA,
   checkGenieYamlExistence,
 } from './helpers';
-import { createAdminClient } from '@/utils/supabase/admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { getInstallationTokens } from '../../get-installaion-tokens';
+import { getInstallationTokens } from '../../../../../../github/get-installaion-tokens';
 import { Octokit } from 'octokit';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(_: Request) {
-  return NextResponse.json({ message: 'Not implemented' }, { status: 501 });
+interface Params {
+  params: {
+    fileId: string;
+  };
 }
 
-export async function POST(req: Request) {
-  const sbAdmin = createAdminClient();
-
-  if (!sbAdmin) {
-    return NextResponse.json({ message: 'Not authorized' }, { status: 401 });
-  }
-
+export async function POST(req: Request, { params: { fileId } }: Params) {
   const supabase = createRouteHandlerClient({ cookies });
 
   const {
@@ -31,16 +26,6 @@ export async function POST(req: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ message: 'Not authorized' }, { status: 401 });
-  }
-
-  const { error } = await sbAdmin
-    .from('whitelisted_emails')
-    .select('email')
-    .eq('email', user?.email)
-    .single();
-
-  if (error) {
     return NextResponse.json({ message: 'Not authorized' }, { status: 401 });
   }
 
@@ -60,7 +45,7 @@ export async function POST(req: Request) {
     auth: githubAccessToken,
   });
 
-  const branch = await createBranch({
+  await createBranch({
     octokit,
     username,
     repository,
@@ -92,6 +77,17 @@ export async function POST(req: Request) {
     commitMessage: commit_message,
     latestCommitSha: latestCommitSHA,
   });
+
+  const { searchParams } = new URL(req.url);
+  const fileVersionId = searchParams.get('fileVersionId');
+
+  const { error } = await supabase
+    .from('test_file_versions')
+    .update({
+      pushed: true,
+    })
+    .eq('test_file_id', fileId)
+    .eq('id', fileVersionId);
 
   return NextResponse.json({ message: 'Test file created', data, status: 201 });
 }

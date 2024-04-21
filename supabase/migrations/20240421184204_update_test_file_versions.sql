@@ -71,3 +71,5 @@ create trigger add_new_version
 after insert on test_files
 for each row
 execute function add_new_version();
+
+alter table "public"."test_file_versions" add column "pushed" boolean default false;

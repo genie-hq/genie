@@ -193,8 +193,3 @@ const normalizeMessages = (messages: Message[]) =>
     .map(normalize)
     .join('')
     .trim();
-
-function buildPrompt(messages: Message[]) {
-  const normalizedMsgs = normalizeMessages(messages);
-  return normalizedMsgs + AI_PROMPT;
-}

@@ -1,21 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
-import { getInstallationTokens } from '../get-installaion-tokens';
+import { getInstallationTokens } from '../../../../../get-installaion-tokens';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { extractErrors } from './extract-errors';
 
+interface Params {
+  params: {
+    username: string;
+    repo: string;
+    branch: string;
+  };
+}
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const {
-    username,
-    repo,
-    branch,
-  }: { username: string; repo: string; branch: string } = body;
-
-  console.log(username, repo, branch);
-
+export async function GET(
+  _: NextRequest,
+  { params: { username, repo, branch } }: Params
+) {
   const supabase = createRouteHandlerClient({ cookies });
   const githubAccessToken = await getInstallationTokens({ supabase });
 
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (workflows.conclusion == 'failure' && workflows.logs) {
-    const parsedLogs = extractErrors(workflows.logs); 
+    const parsedLogs = extractErrors(workflows.logs);
     workflows.logs = parsedLogs;
   }
 
