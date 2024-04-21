@@ -112,7 +112,7 @@ export default function GithubForm() {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setSaving(true);
 
-    const res = await fetch('/api/github/tests/files', {
+    const res = await fetch(`/api/v1/test-files/0/v/0/push`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

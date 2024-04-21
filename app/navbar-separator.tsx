@@ -21,11 +21,13 @@ export default function NavbarSeparator() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const forceShow = pathname.startsWith('/docs');
+  const forceShow = pathname === '/' || pathname.startsWith('/files');
 
   return (
     <Separator
-      className={`${forceShow || scroll > 0 ? 'opacity-100' : 'opacity-0'} transition duration-300`}
+      className={`${
+        forceShow || scroll > 0 ? 'opacity-100' : 'opacity-0'
+      } transition duration-300`}
     />
   );
 }
