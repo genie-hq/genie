@@ -34,17 +34,20 @@
 - **Version Control and History**: Users can effortlessly track the evolution of test files stored in the Supabase database, enabling them to review past iterations and create new versions as needed. Genie ensures seamless workflow management by automatically storing the workflow YAML file in the `/.github/workflows` folder and test cases in the `/__test__` folder. If these directories are missing, Genie will create them automatically. Additionally, Genie intelligently detects and addresses workflow failures, automatically generating new test cases based on failure analysis until the issue is resolved or reaches 3 failed attempts.
 
 
-## Getting Started 🚀
+## Getting Started With Genie🚀
 
 To start using Genie, follow these simple steps:
 
-1. **Input Prompts**: Begin by providing prompts to the AI system to generate new test cases.
+1. Go to [Genie Application](https://intelligenie.vercel.app/)
 
-2. **Select GitHub Branch**: Specify the GitHub branch where the generated test file will be pushed and tested automatically.
+2. **Input Prompts**: Begin by providing prompts to the AI system to generate new test cases.
 
-3. **Monitor Test Results**: Keep track of test results and receive notifications in case of failures, enabling prompt intervention to maintain the integrity of your codebase.
+3. **Select GitHub Branch**: Specify the GitHub branch where the generated test file will be pushed and tested automatically.
 
-4. **Access Version History**: Explore the version history of test files to review past iterations and generate new versions as necessary, ensuring continuous improvement and quality assurance.
+4. **Monitor Test Results**: Keep track of test results and receive notifications in case of failures, enabling prompt intervention to maintain the integrity of your codebase.
+
+5. **Access Version History**: Explore the version history of test files to review past iterations and generate new versions as necessary, ensuring continuous improvement and quality assurance.
+
 
 ## How to run locally 💻
 This is a Supabase Open Source Hackathon 2024 project! Feel free to contribute to our open source project, Genie!
