@@ -7,7 +7,10 @@ import {
 } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import {
+  createRouteHandlerClient,
+  createServerComponentClient,
+} from '@supabase/auth-helpers-nextjs';
 
 const HUMAN_PROMPT = '\n\nHuman:';
 const AI_PROMPT = '\n\nAssistant:';
@@ -79,7 +82,15 @@ export async function createTestFile(data: {
   return NextResponse.json({ id: file.id }, { status: 200 });
 }
 
-export async function generateTestFile(messages: Message[]) {
+export async function generateTestFile({
+  messages,
+  fileId,
+  fileVersionId,
+}: {
+  messages: Message[];
+  fileId: string;
+  fileVersionId: string;
+}) {
   // Map messages to concatenate each message's content with the system prompt
   const promtedMessages: Message[] = [
     ...messages,
@@ -104,7 +115,24 @@ export async function generateTestFile(messages: Message[]) {
     })
     .generateContentStream(buildGoogleGenAIPrompt(promtedMessages));
 
-  const stream = GoogleGenerativeAIStream(geminiStream);
+  const supabase = createRouteHandlerClient({
+    cookies,
+  });
+
+  const stream = GoogleGenerativeAIStream(geminiStream, {
+    onCompletion: async (completion) => {
+      const { error } = await supabase
+        .from('test_file_versions')
+        .update({ code: completion })
+        .eq('test_file_id', fileId)
+        .eq('id', fileVersionId)
+        .single();
+
+      if (error) {
+        console.error(error);
+      }
+    },
+  });
 
   return new StreamingTextResponse(stream);
 }

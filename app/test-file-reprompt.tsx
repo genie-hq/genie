@@ -18,6 +18,7 @@ export default function TestFileReprompt({
     versions: number;
     code: string;
     prompt: string;
+    version_id: string;
   };
 }) {
   const router = useRouter();
@@ -27,15 +28,28 @@ export default function TestFileReprompt({
 
   const { messages, input, isLoading, handleInputChange, reload } = useChat({
     api: file?.id
-      ? `/api/v1/test-files/$${file.id}/v/${file.version}/generate`
+      ? `/api/v1/test-files/${file.id}/v/${file.version}/generate?fileVersionId=${file.version_id}`
       : undefined,
-    initialMessages: [
-      {
-        id: 'prompt',
-        role: 'user',
-        content: file?.prompt || '',
-      },
-    ],
+    initialMessages: file?.code
+      ? [
+          {
+            id: 'prompt',
+            role: 'user',
+            content: file?.prompt || '',
+          },
+          {
+            id: 'assistant',
+            role: 'assistant',
+            content: file.code,
+          },
+        ]
+      : [
+          {
+            id: 'prompt',
+            role: 'user',
+            content: file?.prompt || '',
+          },
+        ],
   });
 
   useEffect(() => {

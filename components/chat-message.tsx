@@ -54,7 +54,6 @@ export function ChatMessage({
               <User className="h-5 w-5" />
             ) : (
               <Avatar className="h-10 w-10 rounded-md">
-                <AvatarImage src="/media/logos/light.png" alt="Skora" />
                 <AvatarFallback className="rounded-lg font-semibold">
                   AI
                 </AvatarFallback>
