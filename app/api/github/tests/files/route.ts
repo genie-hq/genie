@@ -3,6 +3,8 @@ import { createBranch, upsertTestFile } from './helpers';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { getInstallationTokens } from '../../get-installaion-tokens';
+import { Octokit } from 'octokit';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,7 +49,14 @@ export async function POST(req: Request) {
     commit_message,
   } = await req.json();
 
+  const githubAccessToken = await getInstallationTokens({ supabase });
+
+  const octokit = new Octokit({
+    auth: githubAccessToken,
+  });
+
   const branch = await createBranch({
+    octokit,
     username,
     repository,
     baseBranch: reference_branch,
@@ -55,6 +64,7 @@ export async function POST(req: Request) {
   });
 
   const data = await upsertTestFile({
+    octokit,
     username,
     repository,
     branch: target_branch,

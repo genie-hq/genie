@@ -1,22 +1,20 @@
 import { Octokit } from 'octokit';
 
-const githubAccessToken = process.env.GITHUB_ACCESS_TOKEN;
-const octokit = new Octokit({
-  auth: githubAccessToken,
-});
-
 export async function createBranch({
+  octokit: octokit,
   username: owner,
   repository: repo,
   baseBranch,
   newBranch,
 }: {
+  octokit: any;
   username: string;
   repository: string;
   baseBranch: string;
   newBranch: string;
 }) {
   try {
+   
     // Try to get the reference to the new branch
     try {
       const { data: branch } = await octokit.rest.git.getRef({
@@ -64,12 +62,14 @@ export async function createBranch({
 export async function upsertTestFile({
   username: owner,
   repository: repo,
+  octokit: octokit,
   branch,
   filePath,
   fileContent,
   commitMessage,
   latestCommitSha,
 }: {
+  octokit: any;
   username: string;
   repository: string;
   branch: string;
