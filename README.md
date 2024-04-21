@@ -29,7 +29,9 @@
 
 - **Automated Testing and Deployment**: Upon test case creation, supported in TypeScript and Vitest, the system automatically pushes and tests the generated file in the specified GitHub branch, ensuring seamless integration into your workflow.
 
-- **Continuous Improvement**: In the event of test failures, the system iteratively regenerates test cases until failure occurs three times consecutively. Once the threshold is reached, the user is promptly notified, allowing for swift action to address the underlying issues. Genie manages all interaction between the Genie app and repositories via the Genie Bot (GitHub Application). This includes creating new directories, creating new test cases into new files, updating the test cases, and detecting workflow failures. Genie intelligently detects and addresses workflow failures, automatically generating new test cases based on failure analysis until the issue is resolved or reaches 3 failed attempts.
+- **Continuous Improvement**: In the event of test failures, the system intelligently detects and addresses workflow failures, automatically generating new test cases based on failure analysis until the issue is resolved or reaches 3 failed attempts. Once the threshold is reached, the user is promptly notified, allowing for swift action to address the underlying issues. 
+
+- **Genie Bot**: Genie Bot is Genie's official GitHub application, responsible for managing all interactions between the Genie app and repositories. This includes creating new directories, creating new test cases into new files, updating the test cases, and detecting workflow failures.
 
 - **Version Control and History**: Users can effortlessly track the evolution of test files stored in the Supabase database, enabling them to review past iterations and create new versions as needed. Genie ensures seamless workflow management by automatically storing the workflow YAML file in the `/.github/workflows` folder and test cases in the `/__test__` folder. If these directories are missing, Genie will create them automatically. 
 
@@ -38,7 +40,7 @@
 
 To start using Genie, follow these simple steps:
 
-1. Go to [Genie Application](https://intelligenie.vercel.app/)
+1. **Go to [Genie](https://intelligenie.vercel.app/)**: Log in and install our Genie Bot through automatic redirection.
 
 2. **Input Prompts**: Begin by providing prompts to the AI system to generate new test cases.
 
