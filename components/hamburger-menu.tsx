@@ -2,42 +2,76 @@
 
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import Image from 'next/image';
-import ai_img from '../assets/ai.svg';
-import { Pencil, Plus } from 'lucide-react';
+import { Pencil, Plus, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface HamburgerMenuProps {
+  files: {
+    id: string;
+    name: string;
+  }[];
   disabled?: boolean;
-  onSelect: (index: number) => void;
 }
 
-export const HamburgerMenu = ({ disabled,onSelect }: HamburgerMenuProps) => {
+export const HamburgerMenu = ({ files, disabled }: HamburgerMenuProps) => {
   const router = useRouter();
 
-  const [messageList, setMessageList] = useState<string[]>([]);
-  const [editTitleIndex, setEditTitleIndex] = useState<number>(-1);
+  const supabase = createClientComponentClient();
+
+  const [currentFileId, setCurrentFileId] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState<string>('');
 
-  const createNewMessage = (title: string) => {
-    setMessageList((prevMessages) => [...prevMessages, title]);
+  const editFile = (id: string) => {
+    setCurrentFileId(id);
+    setNewTitle(files.find((file) => file.id === id)?.name || '');
+  };
+
+  const deleteFile = async (id: string) => {
+    const { error } = await supabase.from('test_files').delete().eq('id', id);
+
+    if (error) {
+      alert('Error deleting file');
+      return;
+    }
+
+    router.refresh();
   };
 
   const onInputChange = (value: string) => {
     setNewTitle(value);
   };
 
-  const handleEditTitle = (newTitle: string, index: number) => {
-    setEditTitleIndex(-1);
-
-    if (newTitle === '') {
+  const applyFileEdit = async (newTitle: string) => {
+    if (!newTitle) {
+      alert('File name cannot be empty');
       return;
     }
 
-    setMessageList((prevList) =>
-      prevList.map((message, idx) => (idx === index ? newTitle : message))
-    );
-    setNewTitle('');
+    const file = files.find((file) => file.id === currentFileId);
+
+    if (!file) {
+      alert('File not found');
+      return;
+    }
+
+    if (file.name === newTitle) {
+      setCurrentFileId(null);
+      return;
+    }
+
+    const { error } = await supabase
+      .from('test_files')
+      .update({ name: newTitle })
+      .eq('id', currentFileId);
+
+    if (error) {
+      alert('Error updating file');
+      return;
+    }
+
+    setCurrentFileId(null);
+    router.refresh();
   };
 
   return (
@@ -46,50 +80,58 @@ export const HamburgerMenu = ({ disabled,onSelect }: HamburgerMenuProps) => {
         <Button
           className="w-full items-center flex justify-between"
           // onClick={() => createNewMessage('New File')}
-          onClick={() => router.push('/new')}
+          onClick={() => router.push('/')}
           disabled={disabled}
         >
-          Create new prompt
+          Create test file
           <Plus className="w-4 h-4" />
         </Button>
 
-        <div className="my-2 border-t pt-2 font-semibold">Recent prompts</div>
+        {(files?.length || 0) > 0 && (
+          <div className="my-2 border-t pt-2 font-semibold">Recent Files</div>
+        )}
 
         <div className="overflow-auto h-96">
-          {messageList.map((message, index) => (
+          {files.map((file) => (
             <Button
-              key={index}
-              className="w-full my-0.5 px-2 justify-start"
+              key={file.id}
+              className="w-full my-0.5 px-2 justify-start group"
               variant="ghost"
-              onClick={() => onSelect(index)}
             >
               <div className="truncate flex justify-between w-full items-center">
-                {editTitleIndex === index ? (
+                {currentFileId === file.id ? (
                   <input
                     type="text"
-                    placeholder={message}
+                    placeholder={file.name}
                     value={newTitle}
                     onChange={(e) => onInputChange(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleEditTitle(newTitle, index);
-                      }
+                      if (e.key === 'Enter') applyFileEdit(newTitle);
                     }}
-                    onBlur={() => handleEditTitle(newTitle, index)}
+                    onBlur={() => applyFileEdit(newTitle)}
                     autoFocus
                     className="bg-transparent focus:outline-none"
                   />
                 ) : (
-                  <span>{message}</span>
+                  <span>{file.name}</span>
                 )}
 
-                <Pencil
-                  className="w-4 h-4 opacity-50 hover:opacity-100"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setEditTitleIndex(index);
-                  }}
-                />
+                <div className="flex items-center gap-1">
+                  <Pencil
+                    className="w-4 h-4 opacity-0 group-hover:opacity-50 group-hover:hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editFile(file.id);
+                    }}
+                  />
+                  <Trash
+                    className="w-4 h-4 opacity-0 group-hover:opacity-50 group-hover:hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteFile(file.id);
+                    }}
+                  />
+                </div>
               </div>
             </Button>
           ))}
@@ -102,7 +144,6 @@ export const HamburgerMenu = ({ disabled,onSelect }: HamburgerMenuProps) => {
           variant="ghost"
           disabled
         >
-          <Image src={ai_img} alt="app logo" className="w-6 h-6 opacity-70" />
           Upgrade to GenieX
         </Button>
 

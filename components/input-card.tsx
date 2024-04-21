@@ -16,7 +16,7 @@ export default function InputCard({
   return (
     <>
       <div className={cn('grid', className)}>
-        <div className="text-2xl font-bold">{title}</div>
+        <div className="text-lg md:text-xl font-bold">{title}</div>
         {description && (
           <div className="text-foreground/80 whitespace-pre-line font-semibold">
             {description}
