@@ -1,10 +1,10 @@
 'use client';
 
-import { HamburgerMenu } from './ai_prompt/components/hamburger-menu';
-import { InputBar } from './ai_prompt/components/input-bar';
+import { HamburgerMenu } from '../components/hamburger-menu';
+import { InputBar } from '../components/input-bar';
 import Message from './ai_prompt/scripts/message.class';
 import { useEffect, useState, useRef } from 'react';
-import { DropdownMenu } from './ai_prompt/components/dropdown-menu';
+import { DropdownMenu } from '../components/dropdown-menu';
 import { useChat } from 'ai/react';
 import {
   branches,
@@ -15,7 +15,7 @@ import {
   testVersions,
   testingLibraries,
 } from '@/data/root-page-data';
-import { ChatMessage } from './ai_prompt/components/chat-message';
+import { ChatMessage } from '../components/chat-message';
 
 export default function Page() {
   const isNewPrompt = true;
