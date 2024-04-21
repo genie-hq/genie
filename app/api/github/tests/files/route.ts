@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createBranch, upsertTestFile } from './helpers';
+import {
+  createBranch,
+  upsertTestFile,
+  getLatestCommitSHA,
+  checkGenieYamlExistence,
+} from './helpers';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
@@ -50,7 +55,7 @@ export async function POST(req: Request) {
   } = await req.json();
 
   const githubAccessToken = await getInstallationTokens({ supabase });
-
+  console.log('githubAccessToken: ', githubAccessToken);
   const octokit = new Octokit({
     auth: githubAccessToken,
   });
@@ -63,6 +68,21 @@ export async function POST(req: Request) {
     newBranch: target_branch,
   });
 
+  await checkGenieYamlExistence({
+    octokit,
+    owner: username,
+    repository,
+    branch: target_branch,
+    latestCommitSha: branch.object.sha,
+  });
+
+  const latestCommitSHA = await getLatestCommitSHA({
+    octokit,
+    owner: username,
+    repository,
+    branch: target_branch,
+  });
+
   const data = await upsertTestFile({
     octokit,
     username,
@@ -71,7 +91,7 @@ export async function POST(req: Request) {
     filePath: path,
     fileContent: content,
     commitMessage: commit_message,
-    latestCommitSha: branch.object.sha,
+    latestCommitSha: latestCommitSHA,
   });
 
   return NextResponse.json({ message: 'Test file created', data, status: 201 });

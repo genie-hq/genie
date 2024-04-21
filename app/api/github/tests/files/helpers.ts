@@ -14,7 +14,6 @@ export async function createBranch({
   newBranch: string;
 }) {
   try {
-   
     // Try to get the reference to the new branch
     try {
       const { data: branch } = await octokit.rest.git.getRef({
@@ -30,6 +29,7 @@ export async function createBranch({
     }
 
     // Get the latest commit SHA of the base branch
+    console.log('Fetching latest commit SHA of base branch...');
     const {
       data: {
         object: { sha: latestCommitSha },
@@ -39,6 +39,7 @@ export async function createBranch({
       repo,
       ref: `heads/${baseBranch}`,
     });
+    console.log('Latest commit SHA:', latestCommitSha);
 
     // Create a new branch at the latest commit of the base branch
     const { data: branch } = await octokit.rest.git.createRef({
@@ -55,7 +56,7 @@ export async function createBranch({
       'Error creating branch:',
       error.response?.data?.message || error.message || error
     );
-    throw error; // re-throw the error to be handled by the caller
+    throw error;
   }
 }
 
@@ -135,9 +136,179 @@ export async function upsertTestFile({
     return newCommitSha;
   } catch (error: any) {
     console.error(
-      'Error pushing file to branch:',
+      'Error while pushing file to branch:',
       error.response?.data?.message || error.message || error
     );
-    throw error; // re-throw the error to be handled by the caller
+    throw error;
+  }
+}
+
+export async function checkGenieYamlExistence({
+  octokit,
+  owner,
+  repository: repo,
+  branch,
+  latestCommitSha,
+}: {
+  octokit: any;
+  owner: string;
+  repository: string;
+  branch: string;
+  latestCommitSha: string;
+}) {
+  const genieYamlPath = '.github/workflows/genie.yaml';
+
+  try {
+    const res = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: genieYamlPath,
+      ref: branch,
+    });
+
+    if (res.status === 200) return;
+  } catch (error: any) {
+    // If the error is not found, create the .github/workflows directory and the genie.yaml file
+    if (error.status === 404) {
+      await createWorkflowDirectory({ octokit, owner, repo, branch });
+      await createGenieYaml({
+        owner,
+        repository: repo,
+        octokit,
+        branch,
+        latestCommitSha,
+      });
+      return;
+    }
+    // If the error is other than 404, re-throw it
+    throw error;
+  }
+}
+
+async function createWorkflowDirectory({
+  octokit,
+  owner,
+  repo,
+  branch,
+}: {
+  octokit: any;
+  owner: string;
+  repo: string;
+  branch: string;
+}) {
+  try {
+    // Check if the .github directory exists
+    let res = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: '.github',
+      ref: branch,
+    });
+
+    let contentData = await res.data;
+
+    // If .github directory doesn't exist, create a dummy file within it
+    if (!contentData || contentData.type !== 'dir') {
+      await octokit.rest.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path: '.github/dummy',
+        message: 'Create dummy file in .github directory',
+        // Encode the content as Base64
+        content: Buffer.from(
+          'This file is created to initialize the .github directory'
+        ).toString('base64'),
+        branch,
+      });
+    }
+
+    // Check if workflows directory exists
+    res = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: '.github/workflows',
+      ref: branch,
+    });
+
+    contentData = await res.data;
+
+    // If workflows directory doesn't exist, create it
+    if (!contentData || contentData.type !== 'dir') {
+      await octokit.rest.repos.createOrUpdateFileContents({
+        owner,
+        repo,
+        path: '.github/workflows/dummy',
+        message: 'Create dummy file in .github/workflows directory',
+        // Encode the content as Base64
+        content: Buffer.from(
+          'This file is created to initialize the .github/workflows directory'
+        ).toString('base64'),
+        branch,
+      });
+    }
+  } catch (error) {
+    console.error('Error creating workflows directory:', error);
+    throw error;
+  }
+}
+
+export async function createGenieYaml({
+  octokit,
+  owner,
+  repository,
+  branch,
+  latestCommitSha,
+}: {
+  octokit: any;
+  owner: string;
+  repository: string;
+  branch: string;
+  latestCommitSha: string;
+}) {
+  const genieYamlPath = '.github/workflows/genie.yaml'; // Corrected path
+  const genieYamlContent =
+    'name: Genie Test\n\non:\n  push:\n\njobs:\n  build:\n    name: "Genie\'s Automated Tests"\n    timeout-minutes: 15\n    runs-on: ubuntu-latest\n    strategy:\n      matrix:\n        node-version: [20]\n\n    steps:\n      - name: Check out code\n        uses: actions/checkout@v4\n        with:\n          fetch-depth: 2\n\n      - uses: pnpm/action-setup@v3\n        with:\n          version: 9\n\n      - name: Use Node.js ${{ matrix.node-version }}\n        uses: actions/setup-node@v4\n        with:\n          node-version: ${{ matrix.node-version }}\n          cache: "pnpm"\n\n      - name: Install dependencies\n        run: pnpm install\n\n      - name: Test\n        run: pnpm test';
+  const genieYamlCommitMsg = 'Genie: Create a genie.yaml file';
+
+  try {
+    // Create the genie.yaml file
+    await octokit.rest.repos.createOrUpdateFileContents({
+      owner,
+      repo: repository,
+      path: genieYamlPath,
+      message: genieYamlCommitMsg,
+      content: Buffer.from(genieYamlContent).toString('base64'), // Encode content as Base64
+      branch,
+    });
+
+    console.log('Genie.yaml file created successfully.');
+  } catch (error) {
+    console.error('Error while creating genie.yaml:', error);
+    throw error;
+  }
+}
+
+export async function getLatestCommitSHA({
+  octokit,
+  owner: owner,
+  repository: repo,
+  branch,
+}: {
+  octokit: any;
+  owner: string;
+  repository: string;
+  branch: string;
+}) {
+  try {
+    const response = await octokit.rest.repos.getBranch({
+      owner,
+      repo,
+      branch,
+    });
+    const latestCommitSHA = response.data.commit.sha;
+    return latestCommitSHA;
+  } catch (error) {
+    console.error('Error while getting the latest commit SHA:', error);
+    throw error;
   }
 }

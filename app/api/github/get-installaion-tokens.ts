@@ -16,7 +16,7 @@ export async function getInstallationTokens({
 
     const { data, error } = await supabase
       .from('user_installation_info')
-      .select('id', 'access_token, expires_at', 'installation_id')
+      .select('id, access_token, expires_at, installation_id')
       .eq('user_id', userId)
       .single();
 
@@ -30,14 +30,26 @@ export async function getInstallationTokens({
       return new Response('Installation info not found', { status: 404 });
     }
 
+    console.log('data:', data);
+    console.log('expiresAt:', data.expires_at);
+
     var accessToken = data.access_token;
-    const expiresAt = new Date(data.expires_at);
+    var expiresAt = null;
+
+    if (data.expires_at) {
+      expiresAt = new Date(data.expires_at);
+    } else {
+      // Default expiresAt value as 1 day ago
+      expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() - 1);
+    }
+
     const currentTime = new Date();
 
-    if (expiresAt < currentTime) {
+    if (expiresAt.getTime() < currentTime.getTime()) {
       const regeneratedAccessToken = await getAccessToken(data.installation_id);
       const updatedAccessToken = regeneratedAccessToken.token;
-      const updatedExpiresAt = regeneratedAccessToken.exp.expires_at;
+      const updatedExpiresAt = regeneratedAccessToken.expires_at;
 
       await updateUserInstallationToken(
         supabase,
@@ -58,7 +70,6 @@ export async function getInstallationTokens({
     throw error;
   }
 }
-
 
 async function updateUserInstallationToken(
   supabase: any,
