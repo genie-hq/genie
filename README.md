@@ -8,11 +8,11 @@
 </p>
 
 <p align="center">
-<a href="##developers"><strong>Developers</strong></a> ·
-  <a href="##features"><strong>Features</strong></a> ·  
-  <a href="##getting-started"><strong>Getting Started</strong></a> ·
-   <a href="##how-to-run-locally"><strong>How to run locally</strong></a> ·
-  <a href="##feedback-and-issues"><strong>Feedback and issues</strong></a>
+<a href="#developers-"><strong>Developers</strong></a> ·
+  <a href="#features-"><strong>Features</strong></a> ·  
+  <a href="#getting-started-"><strong>Getting Started</strong></a> ·
+   <a href="#how-to-run-locally-"><strong>How to run locally</strong></a> ·
+  <a href="#feedback-and-issues-"><strong>Feedback and issues</strong></a>
 </p>
 <br/>
 
