@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   // Handle installation failure
   if (installationId == null) {
     return NextResponse.redirect(
-      `https://intelligenie.vercel.app/installation-failed?error=${error}&description=${errorDescription}`
+      `https://intelligenie.vercel.app/error`
     );
   }
 
