@@ -1,4 +1,4 @@
-import { getAccessToken } from './apps/callback/route';
+import { getAccessToken } from './apps/callback/helpers';
 
 export async function getInstallationTokens({
   supabase: supabase,
