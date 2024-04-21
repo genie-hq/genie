@@ -55,16 +55,7 @@ export const buildGoogleGenAIPrompt = (messages: Message[]) => ({
     })),
 });
 
-export async function createTestFile({
-  name,
-  github_username,
-  repository,
-  branch,
-  target_branch,
-  test_library,
-  test_framework,
-  file_path,
-}: {
+export async function createTestFile(data: {
   name: string;
   github_username: string;
   repository: string;
@@ -78,19 +69,14 @@ export async function createTestFile({
     cookies,
   });
 
-  const { data: id, error } = await supabase.from('test_files').insert({
-    name,
-    github_username,
-    repository,
-    branch,
-    target_branch,
-    test_library,
-    test_framework,
-    file_path,
-  });
+  const { data: file, error } = await supabase
+    .from('test_files')
+    .insert(data)
+    .select('id')
+    .single();
 
   if (error) return NextResponse.json(error.message, { status: 500 });
-  return NextResponse.json({ id, name }, { status: 200 });
+  return NextResponse.json({ id: file.id }, { status: 200 });
 }
 
 export async function generateTestFile(messages: Message[]) {

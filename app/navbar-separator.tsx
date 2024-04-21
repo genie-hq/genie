@@ -21,7 +21,7 @@ export default function NavbarSeparator() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const forceShow = pathname === '/';
+  const forceShow = pathname === '/' || pathname.startsWith('/files');
 
   return (
     <Separator

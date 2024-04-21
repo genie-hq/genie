@@ -59,4 +59,20 @@ grant truncate on table "public"."user_installation_info" to "service_role";
 
 grant update on table "public"."user_installation_info" to "service_role";
 
+alter table "public"."user_installation_info" alter column "installation_id" set data type character varying using "installation_id"::character varying;
 
+alter table "public"."user_installation_info" drop constraint "user_installation_pkey";
+
+drop index if exists "public"."user_installation_pkey";
+
+alter table "public"."user_installation_info" add column "expired_at" timestamp without time zone;
+
+alter table "public"."user_installation_info" disable row level security;
+
+CREATE UNIQUE INDEX user_installation_info_pkey ON public.user_installation_info USING btree (id);
+
+alter table "public"."user_installation_info" add constraint "user_installation_info_pkey" PRIMARY KEY using index "user_installation_info_pkey";
+
+alter table "public"."user_installation_info" drop column "expired_at";
+
+alter table "public"."user_installation_info" add column "expires_at" timestamp without time zone;
