@@ -18,10 +18,10 @@
 
 ## Developers 👩‍💻
 
-- Võ Hoàng Phúc <a href="https://github.com/vhpx" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
+- Vo Hoang Phuc <a href="https://github.com/vhpx" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 - Seokyung (Lucia) Kim <a href="https://github.com/lluciiiia" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a> 
-- Lương Quang Huy <a href="https://github.com/WMumei" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
-- Đoàn Hữu Quốc <a href="https://github.com/Mudoker" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
+- Luong Quang Huy <a href="https://github.com/WMumei" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
+- Doan Huu Quoc (Mudoker) <a href="https://github.com/Mudoker" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 
 ## Features  🌟
 
