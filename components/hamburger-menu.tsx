@@ -35,6 +35,7 @@ export const HamburgerMenu = ({ files, disabled }: HamburgerMenuProps) => {
       return;
     }
 
+    router.push('/files');
     router.refresh();
   };
 
@@ -80,7 +81,7 @@ export const HamburgerMenu = ({ files, disabled }: HamburgerMenuProps) => {
         <Button
           className="w-full items-center flex justify-between"
           // onClick={() => createNewMessage('New File')}
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/files')}
           disabled={disabled}
         >
           Create test file
@@ -97,6 +98,7 @@ export const HamburgerMenu = ({ files, disabled }: HamburgerMenuProps) => {
               key={file.id}
               className="w-full my-0.5 px-2 justify-start group"
               variant="ghost"
+              onClick={() => router.push(`/files/${file.id}/v/latest`)}
             >
               <div className="truncate flex justify-between w-full items-center">
                 {currentFileId === file.id ? (

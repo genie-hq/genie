@@ -44,6 +44,9 @@ export default function TestFileForm({
 
   const [branches, setBranches] = useState<string[]>([]);
 
+  const [checking, setChecking] = useState(true);
+  const [requireInstall, setRequireInstall] = useState(true);
+
   const [response, setResponse] = useState<any>(null);
   const [saving, setSaving] = useState(false);
 
@@ -80,28 +83,38 @@ export default function TestFileForm({
 
   useEffect(() => {
     async function fetchBranches() {
+      setChecking(true);
       const res = await fetch(`/api/github/${username}/${repository}/branches`);
       if (!res.ok) {
         setBranches([]);
+        setRequireInstall(true);
+        setChecking(false);
         return;
       }
 
       const { branches } = await res.json();
       setBranches(branches.map((branch: any) => branch.name));
+      setRequireInstall(false);
 
       const defaultBranch =
         branches.find(
           (branch: any) => branch.name === 'main' || branch.name === 'master'
         ) || branches?.[0];
 
-      form.setValue('reference_branch', defaultBranch?.name || '');
+      if (!defaultBranch?.name) {
+        setChecking(false);
+        return;
+      }
+
+      form.setValue('reference_branch', defaultBranch.name || '');
       form.setValue(
         'target_branch',
-        `${defaultBranch?.name}-with-tests-${getTime()}`
+        `${defaultBranch.name}-with-tests-${getTime()}`
       );
 
       // validate the form after setting the default values
       form.trigger();
+      setChecking(false);
     }
 
     fetchBranches();
@@ -124,12 +137,16 @@ export default function TestFileForm({
         test_library: 'Vitest',
         test_framework: 'TypeScript',
         file_path: '/__tests__/new.test.tsx',
+        initial_prompt: prompt,
       }),
     });
 
     if (res.ok) {
-      close();
+      const { id } = await res.json();
+
+      router.push(`/files/${id}/v/latest`);
       router.refresh();
+      close();
     } else {
       setResponse(null);
       toast({
@@ -184,77 +201,103 @@ export default function TestFileForm({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="reference_branch"
-              render={({ field }) => (
-                <InputCard title="Reference Branch" className="col-span-full">
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Select
-                        {...field}
-                        onValueChange={(value) => {
-                          form.setValue('reference_branch', value);
-                          form.setValue(
-                            'target_branch',
-                            `${value}-with-tests-${getTime()}`
-                          );
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a branch" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>
-                              {username}/{repository}
-                            </SelectLabel>
-                            {branches.map((branch) => (
-                              <SelectItem key={branch} value={branch}>
-                                {branch}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </InputCard>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="target_branch"
-              render={({ field }) => (
-                <InputCard title="Target Branch" className="col-span-full">
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        id="target-branch"
-                        placeholder="Target Branch"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                </InputCard>
-              )}
-            />
-
-            <div className="col-span-full flex justify-end">
+            {requireInstall ? (
               <Button
-                type="submit"
-                disabled={
-                  saving ||
-                  form.formState.isSubmitting ||
-                  !form.formState.isValid
+                type="button"
+                onClick={() =>
+                  router.push(
+                    'https://github.com/apps/genie-hq/installations/new'
+                  )
                 }
+                className="col-span-full"
+                disabled={checking}
               >
-                {saving ? 'Creating...' : 'Create Test File'}
+                {checking
+                  ? 'Checking installation...'
+                  : 'Install Genie on GitHub'}
               </Button>
-            </div>
+            ) : (
+              <>
+                <FormField
+                  control={form.control}
+                  name="reference_branch"
+                  render={({ field }) => (
+                    <InputCard
+                      title="Reference Branch"
+                      className="col-span-full"
+                    >
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Select
+                            {...field}
+                            onValueChange={(value) => {
+                              if (!value) return;
+
+                              form.setValue('reference_branch', value);
+                              form.setValue(
+                                'target_branch',
+                                `${value}-with-tests-${getTime()}`
+                              );
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a branch" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>
+                                  {username}/{repository}
+                                </SelectLabel>
+                                {branches.map((branch) => (
+                                  <SelectItem key={branch} value={branch}>
+                                    {branch}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </InputCard>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="target_branch"
+                  render={({ field }) => (
+                    <InputCard title="Target Branch" className="col-span-full">
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Input
+                            id="target-branch"
+                            placeholder="Target Branch"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </InputCard>
+                  )}
+                />
+              </>
+            )}
+
+            {requireInstall || (
+              <div className="col-span-full flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={
+                    saving ||
+                    form.formState.isSubmitting ||
+                    !form.formState.isValid
+                  }
+                >
+                  {saving ? 'Creating...' : 'Create Test File'}
+                </Button>
+              </div>
+            )}
           </div>
         </form>
       </Form>
