@@ -82,4 +82,4 @@ Now you should have the Genie project running locally on your machine, ready for
 
 ## Feedback and issues 📝
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+Please file feedback and issues over on the [Genie Issues](https://github.com/genie-hq/genie/issues/new/choose) page.
