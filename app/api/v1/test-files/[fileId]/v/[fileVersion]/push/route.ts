@@ -89,5 +89,12 @@ export async function POST(req: Request, { params: { fileId } }: Params) {
     .eq('test_file_id', fileId)
     .eq('id', fileVersionId);
 
+  if (error) {
+    return NextResponse.json(
+      { message: 'Error updating test file version', error },
+      { status: 500 }
+    );
+  }
+
   return NextResponse.json({ message: 'Test file created', data, status: 201 });
 }

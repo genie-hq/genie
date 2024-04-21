@@ -15,8 +15,8 @@ import FileUpdateForm from './file-update-form';
 
 export function CreateTestFileDialog({
   file,
-  open,
-  onOpenChange,
+  opened,
+  setOpened,
   prompt,
 }: {
   file?: {
@@ -25,12 +25,14 @@ export function CreateTestFileDialog({
     code: string;
     file_path: string;
   };
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  opened: boolean;
+  showSetup: boolean;
+  setOpened: (opened: boolean) => void;
+  setShowSetup: (showSetup: boolean) => void;
   prompt: string;
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={opened} onOpenChange={setOpened}>
       <DialogTrigger asChild>
         <Button type="submit" variant="ghost" size="icon" disabled={!prompt}>
           <Send className="w-6 h-6" />
@@ -59,9 +61,9 @@ export function CreateTestFileDialog({
         )}
 
         {file ? (
-          <FileUpdateForm file={file} close={() => onOpenChange(false)} />
+          <FileUpdateForm file={file} close={() => setOpened(false)} />
         ) : (
-          <TestFileForm prompt={prompt} close={() => onOpenChange(false)} />
+          <TestFileForm prompt={prompt} close={() => setOpened(false)} />
         )}
       </DialogContent>
     </Dialog>

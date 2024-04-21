@@ -33,7 +33,9 @@ export default function TestFileReprompt({
   const [collapsed, setCollapsed] = useState(true);
   const { messages, input, isLoading, handleInputChange, reload } = useChat({
     api: file?.id
-      ? `/api/v1/test-files/${file.id}/v/${file.version}/generate?fileVersionId=${file.version_id}`
+      ? file.versions === 1
+        ? `/api/v1/test-files/${file.id}/v/${file.version}/generate?fileVersionId=${file.version_id}`
+        : `/api/v1/test-files/${file.id}/v/${file.version}/improve`
       : undefined,
     initialMessages: file?.code
       ? [
@@ -56,6 +58,10 @@ export default function TestFileReprompt({
           },
         ],
   });
+
+  useEffect(() => {
+    router.refresh();
+  }, [router, file?.id, isLoading]);
 
   useEffect(() => {
     if (!file || isLoading) return;
@@ -120,7 +126,7 @@ export default function TestFileReprompt({
           commit_message:
             file?.versions === 0
               ? 'chore(tests): add initial test file'
-              : `chore(tests): update test file (v${file?.versions + 1})`,
+              : `chore(tests): update test file (v${file?.versions - 1})`,
         }),
       }
     );
@@ -137,6 +143,7 @@ export default function TestFileReprompt({
   };
 
   const [opened, setOpened] = useState(false);
+  const [showSetup, setShowSetup] = useState(false);
 
   return (
     <div className="h-full w-full flex">
@@ -148,7 +155,10 @@ export default function TestFileReprompt({
               <div>
                 <button
                   className="opacity-50 hover:opacity-100 transition hover:underline"
-                  onClick={() => setOpened(true)}
+                  onClick={() => {
+                    setOpened(true);
+                    setShowSetup(true);
+                  }}
                 >
                   {file.github_username}/{file.repository}/{file.branch}
                   {file.file_path}
@@ -223,18 +233,20 @@ export default function TestFileReprompt({
                 <ChatMessage message={message} key={index} />
               ))}
 
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Button onClick={pushFile} disabled={file.pushed || pushing}>
-                  {file.pushed
-                    ? 'File successfully pushed to GitHub.'
-                    : pushing
-                    ? 'Pushing...'
-                    : 'Push to GitHub'}
-                </Button>
-                {pushError && (
-                  <div className="text-red-500 text-sm">{pushError}</div>
-                )}
-              </div>
+              {file.code && (
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <Button onClick={pushFile} disabled={file.pushed || pushing}>
+                    {file.pushed
+                      ? 'File successfully pushed to GitHub.'
+                      : pushing
+                      ? 'Pushing...'
+                      : 'Push to GitHub'}
+                  </Button>
+                  {pushError && (
+                    <div className="text-red-500 text-sm">{pushError}</div>
+                  )}
+                </div>
+              )}
             </>
           ) : (
             <div className="text-center text-2xl opacity-50 font-semibold flex items-center justify-center h-full">
@@ -271,7 +283,9 @@ export default function TestFileReprompt({
             <InputBar
               file={file}
               opened={opened}
+              showSetup={showSetup}
               setOpened={setOpened}
+              setShowSetup={setShowSetup}
               input={input}
               handleInputChange={handleInputChange}
             />
