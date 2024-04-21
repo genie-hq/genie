@@ -14,7 +14,12 @@ const defaultProps: ErrorPageProps = {
     description: 'Installation Token Not Detected or Unauthorized Account.',
 }
 
-const ErrorPage: React.FC<ErrorPageProps> = ({ icon: Icon = defaultProps.icon, title = defaultProps.title, description = defaultProps.description }) => {
+const ErrorPage = (
+    { icon: Icon = defaultProps.icon,
+        title = defaultProps.title,
+        description = defaultProps.description
+    }: ErrorPageProps
+) => {
     return (
         <div className='w-dvw h-full flex flex-col items-center justify-center gap-5'>
             {Icon && <Icon className='w-36 h-36 stroke-1' />}
