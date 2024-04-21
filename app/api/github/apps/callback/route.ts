@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
 import { createAppAuth } from '@octokit/auth-app';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import fs from 'fs';
 
 export const dynamic = 'force-dynamic';
@@ -14,8 +15,16 @@ export async function GET(req: Request) {
   const error = urlParams.get('error');
   const errorDescription = urlParams.get('error_description');
 
-  // TODO: Retrieve the userId
-  const userId = '';
+  // Retrieve the userId
+  const supabase = createRouteHandlerClient({ cookies });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return new Response('Unauthorized', { status: 401 });
+  
+  const userId = user.id;
 
   // Handle installation failure
   if (installationId == null) {
