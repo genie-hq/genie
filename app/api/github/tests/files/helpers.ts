@@ -194,20 +194,15 @@ async function createWorkflowDirectory({
   branch: string;
 }) {
   try {
-    // Check if the .github directory exists
-    let res = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: '.github',
-      ref: branch,
-    });
-
-    let contentData = await res.data;
-
-    console.log('.github content data', contentData);
-
-    // If .github directory doesn't exist, create a dummy file within it
-    if (!contentData) {
+    let res;
+    try {
+      res = await octokit.rest.repos.getContent({
+        owner,
+        repo,
+        path: '.github',
+        ref: branch,
+      });
+    } catch (error) {
       await octokit.rest.repos.createOrUpdateFileContents({
         owner,
         repo,
@@ -222,19 +217,14 @@ async function createWorkflowDirectory({
     }
 
     // Check if workflows directory exists
-    res = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: '.github/workflows',
-      ref: branch,
-    });
-
-    contentData = await res.data;
-
-    console.log('.github/workflows content data', contentData);
-
-    // If workflows directory doesn't exist, create it
-    if (!contentData) {
+    try {
+      res = await octokit.rest.repos.getContent({
+        owner,
+        repo,
+        path: '.github/workflows',
+        ref: branch,
+      });
+    } catch (error) {
       await octokit.rest.repos.createOrUpdateFileContents({
         owner,
         repo,
