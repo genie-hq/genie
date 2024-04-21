@@ -15,7 +15,7 @@ export const InputBar: FC<Props> = ({
   handleSubmit,
 }) => {
   return (
-    <div className="p-4 pt-0 w-full">
+    <div className="p-4 w-full border-t">
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex gap-2 w-full">
           <Textarea
