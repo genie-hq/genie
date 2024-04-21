@@ -56,7 +56,7 @@ To run the project locally, follow these steps:
 
 2. Install Dependencies:
    - Navigate into the cloned directory.
-   - Run `npm install` or `yarn install` to install the project dependencies.
+   - Run `pnpm install`, `npm install` or `yarn install` to install the project dependencies.
 
 3. Environment Variables:
    - Rename the file `env.example` to `env.local`.
