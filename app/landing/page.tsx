@@ -1,7 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import bright_logo from './bright-light.png';
-import tutu3ru_logo from './Transparent.png';
 import coding_img from './coding.png';
 
 function page() {
