@@ -31,13 +31,22 @@ export async function getInstallationTokens({
     }
 
     var accessToken = data.access_token;
-    const expiresAt = new Date(data.expires_at);
+    var expiresAt = null;
+
+    if (data.expires_at) {
+      expiresAt = new Date(data.expires_at);
+    } else {
+      // Default expiresAt value as 1 day ago
+      expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() - 1);
+    }
+
     const currentTime = new Date();
 
-    if (expiresAt < currentTime) {
+    if (expiresAt.getTime() < currentTime.getTime()) {
       const regeneratedAccessToken = await getAccessToken(data.installation_id);
       const updatedAccessToken = regeneratedAccessToken.token;
-      const updatedExpiresAt = regeneratedAccessToken.exp.expires_at;
+      const updatedExpiresAt = regeneratedAccessToken.expires_at;
 
       await updateUserInstallationToken(
         supabase,
