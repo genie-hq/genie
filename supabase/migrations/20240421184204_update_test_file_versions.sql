@@ -52,11 +52,17 @@ to authenticated
 using ((auth.uid() = user_id))
 with check ((auth.uid() = user_id));
 
+alter table "public"."test_files" drop constraint "test_files_initial_prompt_check";
+
+alter table "public"."test_file_versions" add column "prompt" text not null;
+
+alter table "public"."test_files" drop column "initial_prompt";
+
 -- add a trigger to automatically add the test_file_id to the test_file_versions table when new entry is added to test_files
 create or replace function add_new_version()
 returns trigger as $$
 begin
-  insert into test_file_versions (test_file_id, code) values (new.id, '');
+  insert into test_file_versions (test_file_id, code, prompt) values (new.id, '', new.name);
   return new;
 end;
 $$ language plpgsql;

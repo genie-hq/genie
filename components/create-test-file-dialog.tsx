@@ -12,13 +12,19 @@ import TestFileForm from './test-file-form';
 import InputCard from './input-card';
 import { useState } from 'react';
 
-export function CreateTestFileDialog({ prompt }: { prompt: string }) {
-  const [opened, setOpened] = useState(false);
-
+export function CreateTestFileDialog({
+  open,
+  onOpenChange,
+  prompt,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  prompt: string;
+}) {
   return (
-    <Dialog open={opened} onOpenChange={setOpened}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button type="button" variant="ghost" size="icon" disabled={!prompt}>
+        <Button type="submit" variant="ghost" size="icon" disabled={!prompt}>
           <Send className="w-6 h-6" />
         </Button>
       </DialogTrigger>
@@ -41,7 +47,7 @@ export function CreateTestFileDialog({ prompt }: { prompt: string }) {
           </div>
         </InputCard>
 
-        <TestFileForm prompt={prompt} close={() => setOpened(false)} />
+        <TestFileForm prompt={prompt} close={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
   );

@@ -45,5 +45,5 @@ export async function GET(req: Request) {
   );
 
   // Redirect to the installation page of your GitHub app
-  return NextResponse.redirect(`https://intelligenie.vercel.app/new`);
+  return NextResponse.redirect(`https://intelligenie.vercel.app/files`);
 }

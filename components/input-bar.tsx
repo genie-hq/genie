@@ -1,23 +1,31 @@
-import { FC } from 'react';
-import { Textarea } from '@/components/ui/textarea';
+import { FC, useState } from 'react';
 import { CreateTestFileDialog } from './create-test-file-dialog';
+import { Input } from './ui/input';
 
 interface Props {
   file?: {
     id: string;
     version: string;
     code: string;
-    initial_prompt: string;
   };
   input: string;
-  handleInputChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const InputBar: FC<Props> = ({ file, input, handleInputChange }) => {
+  const [opened, setOpened] = useState(false);
+
   return (
     <div className="p-4 w-full">
-      <div className="flex gap-2 w-full">
-        <Textarea
+      <form
+        className="flex gap-2 w-full"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setOpened(true);
+        }}
+      >
+        <Input
+          id="input-bar"
           className="w-full flex-1 bg-foreground/5 border rounded-lg p-2 h-18 focus-visible:ring-transparent overflow-hidden text-md resize-none"
           value={input}
           onChange={handleInputChange}
@@ -28,8 +36,12 @@ export const InputBar: FC<Props> = ({ file, input, handleInputChange }) => {
           }
         />
 
-        <CreateTestFileDialog prompt={input} />
-      </div>
+        <CreateTestFileDialog
+          open={opened}
+          onOpenChange={setOpened}
+          prompt={input}
+        />
+      </form>
     </div>
   );
 };

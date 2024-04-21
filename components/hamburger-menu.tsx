@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Pencil, Plus, Trash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface HamburgerMenuProps {
@@ -11,11 +11,11 @@ interface HamburgerMenuProps {
     id: string;
     name: string;
   }[];
-  disabled?: boolean;
 }
 
-export const HamburgerMenu = ({ files, disabled }: HamburgerMenuProps) => {
+export const HamburgerMenu = ({ files }: HamburgerMenuProps) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const supabase = createClientComponentClient();
 
@@ -80,9 +80,8 @@ export const HamburgerMenu = ({ files, disabled }: HamburgerMenuProps) => {
       <div>
         <Button
           className="w-full items-center flex justify-between"
-          // onClick={() => createNewMessage('New File')}
           onClick={() => router.push('/files')}
-          disabled={disabled}
+          disabled={pathname === '/files'}
         >
           Create test file
           <Plus className="w-4 h-4" />

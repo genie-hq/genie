@@ -1,7 +1,7 @@
 'use client';
 
 import { InputBar } from '../components/input-bar';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useChat } from 'ai/react';
 import { ChatMessage } from '../components/chat-message';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,7 @@ export default function TestFileReprompt({
     version: string;
     versions: number;
     code: string;
-    initial_prompt: string;
+    prompt: string;
   };
 }) {
   const router = useRouter();
@@ -31,9 +31,9 @@ export default function TestFileReprompt({
       : undefined,
     initialMessages: [
       {
-        id: 'initial_prompt',
+        id: 'prompt',
         role: 'user',
-        content: file?.initial_prompt || '',
+        content: file?.prompt || '',
       },
     ],
   });
@@ -84,46 +84,56 @@ export default function TestFileReprompt({
               className={`${
                 collapsed
                   ? 'h-0 opacity-0'
-                  : 'p-2 md:p-4 h-fit border-b opacity-100'
+                  : 'p-2 md:p-4 pb-0 md:pb-0 h-fit border-b opacity-100'
               } overflow-auto border-t transition-all`}
             >
               <ChatMessage
                 message={{
-                  id: 'initial_prompt',
+                  id: 'prompt',
                   role: 'user',
-                  content: file.initial_prompt,
+                  content: file.prompt,
                 }}
               />
             </div>
           </div>
         )}
 
-        <div className="p-4 pb-0 overflow-auto">
-          {messages.slice(1).map((message, index) => (
-            <ChatMessage message={message} key={index} />
-          ))}
+        <div className="p-4 pb-0 overflow-auto h-full">
+          {file ? (
+            messages
+              .slice(1)
+              .map((message, index) => (
+                <ChatMessage message={message} key={index} />
+              ))
+          ) : (
+            <div className="text-center text-2xl opacity-50 font-semibold flex items-center justify-center h-full">
+              Get started by creating a new test file.
+            </div>
+          )}
         </div>
 
         {/* Config + Input */}
         <div className="flex flex-col items-end w-full gap-2 relative">
-          <div className="justify-end w-full px-8 absolute -top-12">
-            <div className="flex items-end justify-end gap-2 opacity-20 hover:opacity-100 transition">
-              <DropdownMenu
-                title="Default version"
-                value={file?.version || 'latest'}
-                setValue={(value) =>
-                  router.push(`/files/${file?.id}/v/${value}`)
-                }
-                options={[
-                  { label: 'Latest', value: 'latest' },
-                  ...Array.from({ length: file?.versions || 0 }, (_, i) => ({
-                    label: `Version ${i}`,
-                    value: `${i}`,
-                  })),
-                ]}
-              />
+          {file?.versions && (
+            <div className="justify-end w-full px-8 absolute -top-12">
+              <div className="flex items-end justify-end gap-2 opacity-20 hover:opacity-100 transition">
+                <DropdownMenu
+                  title="Default version"
+                  value={file?.version || 'latest'}
+                  setValue={(value) =>
+                    router.push(`/files/${file?.id}/v/${value}`)
+                  }
+                  options={[
+                    { label: 'Latest', value: 'latest' },
+                    ...Array.from({ length: file?.versions || 0 }, (_, i) => ({
+                      label: `Version ${i}`,
+                      value: `${i}`,
+                    })),
+                  ]}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="w-full flex items-center border-t justify-center">
             <InputBar
