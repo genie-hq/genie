@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createUserInstallationToken, getAccessToken } from './helpers';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,9 +16,8 @@ export async function GET(req: Request) {
   // Handle installation failure
   if (installationId == null) {
     return NextResponse.redirect(
-        `https://intelligenie.vercel.app/installation-failed?error=${error}&description=${errorDescription}`
-      );
-    
+      `https://intelligenie.vercel.app/installation-failed?error=${error}&description=${errorDescription}`
+    );
   }
 
   // Retrieve the userId
@@ -34,79 +34,16 @@ export async function GET(req: Request) {
 
   // Obtain installation access token using installation ID
   const accessToken = await getAccessToken(installationId);
-  console.log(`Access token: ${accessToken}`);
+  console.log(`Access token: ${accessToken.token}`);
 
-  await updateUserInstallationToken(
+  await createUserInstallationToken(
     supabase,
     userId,
     installationId,
-    accessToken
+    accessToken.token,
+    accessToken.expires_at
   );
 
   // Redirect to the installation page of your GitHub app
   return NextResponse.redirect(`https://intelligenie.vercel.app/new`);
-}
-
-async function getAccessToken(installationId: string) {
-  const jwtToken = generateJWT();
-
-  const response = await fetch(
-    `https://api.github.com/app/installations/${installationId}/access_tokens`,
-    {
-      method: 'POST',
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        Authorization: `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json',
-      },
-    }
-  );
-
-  const data = await response.json();
-  return data.token;
-}
-
-function generateJWT() {
-  const appId = process.env.BOT_APP_ID || '';
-  const privateKey = process.env.BOT_PRIVATE_KEY?.replace(/\\n/g, '\n') || '';
-
-  const jwt = require('jsonwebtoken');
-
-  const payload = {
-    iat: Math.floor(Date.now() / 1000), // Issued at time
-    exp: Math.floor(Date.now() / 1000) + 60, // Expiration time (1 minute from now)
-    iss: appId, 
-  };
-
-  const token = jwt.sign(payload, privateKey, { algorithm: 'RS256' });
-  return token;
-}
-
-async function updateUserInstallationToken(
-  supabase: any,
-  userId: string,
-  installationId: string,
-  accessToken: string
-) {
-  try {
-    const { data, error } = await supabase
-      .from('user_installation_info')
-      .insert({
-        user_id: userId,
-        installation_id: installationId,
-        access_token: accessToken,
-      });
-
-    if (error) {
-      throw new Error(
-        `Failed to update user installation info: ${error.message}`
-      );
-    }
-
-    console.log('User installation info updated successfully.');
-    return;
-  } catch (error) {
-    console.error('Error updating user installation info:', error);
-    throw error;
-  }
 }

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
+import { getInstallationTokens } from '../get-installaion-tokens';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -10,7 +13,16 @@ export async function POST(req: NextRequest) {
   }: { username: string; repo: string; branch: string } = body;
 
   console.log(username, repo, branch);
+
+  const supabase = createRouteHandlerClient({ cookies });
+  const githubAccessToken = await getInstallationTokens({ supabase });
+
+  const octokit = new Octokit({
+    auth: githubAccessToken,
+  });
+
   const workflows = await getWorkflows({
+    octokit,
     username,
     repository: repo,
     branch: branch,
@@ -18,16 +30,13 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ workflows });
 }
 
-const githubAccessToken = process.env.GITHUB_ACCESS_TOKEN;
-const octokit = new Octokit({
-  auth: githubAccessToken,
-});
-
 async function getWorkflows({
+  octokit: octokit,
   username: owner,
   repository: repo,
   branch: branch,
 }: {
+  octokit: any;
   username: string;
   repository: string;
   branch: string;
@@ -48,7 +57,12 @@ async function getWorkflows({
     });
 
     if (workflowRun.conclusion === 'failure') {
-      const logs = await getWorkflowLogs(owner, repo, latestWorkflowRunId);
+      const logs = await getWorkflowLogs(
+        octokit,
+        owner,
+        repo,
+        latestWorkflowRunId
+      );
       return { conclusion: workflowRun.conclusion, logs };
     }
 
@@ -58,7 +72,12 @@ async function getWorkflows({
   }
 }
 
-async function getWorkflowLogs(owner: string, repo: string, runId: number) {
+async function getWorkflowLogs(
+  octokit: any,
+  owner: string,
+  repo: string,
+  runId: number
+) {
   try {
     const { data: jobs } = await octokit.rest.actions.listJobsForWorkflowRun({
       owner,

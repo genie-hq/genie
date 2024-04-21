@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
-import { createBranch, upsertTestFile } from './helpers';
+import {
+  createBranch,
+  upsertTestFile,
+  getLatestCommitSHA,
+  checkGenieYamlExistence,
+} from './helpers';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { getInstallationTokens } from '../../get-installaion-tokens';
+import { Octokit } from 'octokit';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,21 +54,43 @@ export async function POST(req: Request) {
     commit_message,
   } = await req.json();
 
+  const githubAccessToken = await getInstallationTokens({ supabase });
+  console.log('githubAccessToken: ', githubAccessToken);
+  const octokit = new Octokit({
+    auth: githubAccessToken,
+  });
+
   const branch = await createBranch({
+    octokit,
     username,
     repository,
     baseBranch: reference_branch,
     newBranch: target_branch,
   });
 
+  await checkGenieYamlExistence({
+    octokit,
+    owner: username,
+    repository,
+    branch: target_branch,
+  });
+
+  const latestCommitSHA = await getLatestCommitSHA({
+    octokit,
+    owner: username,
+    repository,
+    branch: target_branch,
+  });
+
   const data = await upsertTestFile({
+    octokit,
     username,
     repository,
     branch: target_branch,
     filePath: path,
     fileContent: content,
     commitMessage: commit_message,
-    latestCommitSha: branch.object.sha,
+    latestCommitSha: latestCommitSHA,
   });
 
   return NextResponse.json({ message: 'Test file created', data, status: 201 });
