@@ -3,6 +3,8 @@ import { Octokit } from 'octokit';
 import { getInstallationTokens } from '../get-installaion-tokens';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { extractErrors } from './extract-errors';
+
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -27,6 +29,12 @@ export async function POST(req: NextRequest) {
     repository: repo,
     branch: branch,
   });
+
+  if (workflows.conclusion == 'failure' && workflows.logs) {
+    const parsedLogs = extractErrors(workflows.logs); 
+    workflows.logs = parsedLogs;
+  }
+
   return NextResponse.json({ workflows });
 }
 
