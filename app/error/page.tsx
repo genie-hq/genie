@@ -1,37 +1,25 @@
-import { Button } from '@/components/ui/button'
-import React from 'react'
-import { ServerOff } from 'lucide-react'
+"use client";
 
-interface ErrorPageProps {
-    icon?: JSX.ElementType
-    title?: string
-    description?: string
-}
+import { Button } from '@/components/ui/button';
+import { ServerOff } from 'lucide-react';
+import { useRouter } from 'next/navigation'
 
-const defaultProps: ErrorPageProps = {
-    icon: ServerOff,
-    title: 'Installation Failed',
-    description: 'Installation Token Not Detected or Unauthorized Account.',
-}
+const ErrorPage = () => {
+    const router = useRouter()
 
-const ErrorPage: React.FC<ErrorPageProps> = ({
-    icon: Icon = defaultProps.icon,
-    title = defaultProps.title,
-    description = defaultProps.description
-}) => {
     return (
-        <div className='w-dvw h-full flex flex-col items-center justify-center gap-5'>
-            {Icon && <Icon className='w-36 h-36 stroke-1' />}
+        <div className='w-full h-full flex flex-col items-center justify-center gap-5'>
+            <ServerOff className='w-28 h-28 stroke-1' />
 
-            <div className=' text-4xl font-semibold'>
-                {title}
+            <div className='text-3xl font-semibold'>
+                Installation Failed
             </div>
 
-            <div className=' opacity-50 flex items-center flex-col'>
-                {description}
+            <div className='opacity-50 flex items-center flex-col'>
+                Installation Token Not Detected or Unauthorized Account.
             </div>
 
-            <Button className='mt-5 font-semibold' size="lg">
+            <Button className='mt-5 font-semibold' size="lg" onClick={() => router.push('/login')}>
                 Go back to home
             </Button>
 
@@ -40,6 +28,6 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
             </Button>
         </div>
     )
-}
+};
 
 export default ErrorPage;
