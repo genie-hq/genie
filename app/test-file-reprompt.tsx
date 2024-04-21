@@ -136,6 +136,8 @@ export default function TestFileReprompt({
     router.refresh();
   };
 
+  const [opened, setOpened] = useState(false);
+
   return (
     <div className="h-full w-full flex">
       <div className="flex flex-col w-full justify-between">
@@ -144,10 +146,13 @@ export default function TestFileReprompt({
           <div>
             <div className="flex items-center justify-between p-4">
               <div>
-                <div className="opacity-50">
+                <button
+                  className="opacity-50 hover:opacity-100 transition hover:underline"
+                  onClick={() => setOpened(true)}
+                >
                   {file.github_username}/{file.repository}/{file.branch}
                   {file.file_path}
-                </div>
+                </button>
                 <div className="flex items-center gap-2">
                   <div className="text-lg font-bold">{file.name}</div>
                   <div className="text-sm bg-foreground text-background font-semibold rounded px-1">
@@ -265,6 +270,8 @@ export default function TestFileReprompt({
           <div className="w-full flex items-center border-t justify-center">
             <InputBar
               file={file}
+              opened={opened}
+              setOpened={setOpened}
               input={input}
               handleInputChange={handleInputChange}
             />

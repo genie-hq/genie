@@ -9,14 +9,21 @@ interface Props {
     id: string;
     version: string;
     code: string;
+    file_path: string;
   };
+  opened: boolean;
+  setOpened: (opened: boolean) => void;
   input: string;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const InputBar: FC<Props> = ({ file, input, handleInputChange }) => {
-  const [opened, setOpened] = useState(false);
-
+export const InputBar: FC<Props> = ({
+  file,
+  opened,
+  setOpened,
+  input,
+  handleInputChange,
+}) => {
   return (
     <div className="p-4 w-full">
       <form
@@ -38,17 +45,12 @@ export const InputBar: FC<Props> = ({ file, input, handleInputChange }) => {
           }
         />
 
-        {file ? (
-          <Button type="submit" variant="ghost" size="icon" disabled={!input}>
-            <RefreshCcw className="w-6 h-6" />
-          </Button>
-        ) : (
-          <CreateTestFileDialog
-            open={opened}
-            onOpenChange={setOpened}
-            prompt={input}
-          />
-        )}
+        <CreateTestFileDialog
+          file={file}
+          open={opened}
+          onOpenChange={setOpened}
+          prompt={input}
+        />
       </form>
     </div>
   );

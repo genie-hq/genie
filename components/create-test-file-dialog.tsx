@@ -11,12 +11,20 @@ import { Send } from 'lucide-react';
 import TestFileForm from './test-file-form';
 import InputCard from './input-card';
 import { useState } from 'react';
+import FileUpdateForm from './file-update-form';
 
 export function CreateTestFileDialog({
+  file,
   open,
   onOpenChange,
   prompt,
 }: {
+  file?: {
+    id: string;
+    version: string;
+    code: string;
+    file_path: string;
+  };
   open: boolean;
   onOpenChange: (open: boolean) => void;
   prompt: string;
@@ -37,17 +45,24 @@ export function CreateTestFileDialog({
         <DialogHeader>
           <DialogTitle>Test File Setup</DialogTitle>
           <DialogDescription>
-            Create a test file that Genie will use to automatically run test
-            cases on your CI/CD pipeline using GitHub Actions.
+            {file
+              ? 'Update the test file with the changes you want to make.'
+              : 'Create a test file that Genie will use to automatically run test cases on your CI/CD pipeline using GitHub Actions.'}
           </DialogDescription>
         </DialogHeader>
-        <InputCard title="Test Generation">
-          <div className="text-sm border rounded p-2 md:p-4 bg-foreground/5">
-            {prompt}
-          </div>
-        </InputCard>
+        {!!file?.id || (
+          <InputCard title="Test Generation">
+            <div className="text-sm border rounded p-2 md:p-4 bg-foreground/5">
+              {prompt}
+            </div>
+          </InputCard>
+        )}
 
-        <TestFileForm prompt={prompt} close={() => onOpenChange(false)} />
+        {file ? (
+          <FileUpdateForm file={file} close={() => onOpenChange(false)} />
+        ) : (
+          <TestFileForm prompt={prompt} close={() => onOpenChange(false)} />
+        )}
       </DialogContent>
     </Dialog>
   );

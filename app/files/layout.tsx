@@ -19,7 +19,10 @@ export default async function FilesLayout({ children }: LayoutProps) {
 
   if (!user) redirect('/login');
 
-  const { data, error } = await supabase.from('test_files').select('*');
+  const { data, error } = await supabase
+    .from('test_files')
+    .select('*')
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error(error);
