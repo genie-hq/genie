@@ -59,9 +59,8 @@ const testingLibraries = [
 const testVersions = [{ value: 'v0', label: 'Version 0' }];
 
 export default function Page() {
-  const [messageList, setMessageList] = useState<Message[]>(sampleMessages);
-  const [isNewPrompt, setIsNewPrompt] = useState<boolean>(true);
-  const [isSpinning, setIsSpinning] = useState(false);
+  const isNewPrompt = true;
+
   const [selectedPrompt, setSelectedPrompt] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -73,20 +72,8 @@ export default function Page() {
   };
 
   useEffect(() => {
-    console.log(messages);
-  }, [messages]);
-
-  const handleReload = () => {
-    // Toggle the spinning state
-    setIsSpinning((prevState) => !prevState);
-    setTimeout(() => {
-      setIsSpinning((prevState) => !prevState);
-    }, 1000);
-  };
-
-  useEffect(() => {
     scrollToBottom();
-  }, [messageList]);
+  }, [messages]);
 
   useEffect(() => {
     console.log(selectedPrompt);
@@ -99,7 +86,7 @@ export default function Page() {
 
       <div className="flex flex-col w-full justify-between">
         {/* Output View */}
-        <div className=' overflow-auto'>
+        <div className=" overflow-auto">
           <MessageView messageList={messages} />
           <div ref={messagesEndRef} />
         </div>
