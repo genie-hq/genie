@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import coding_img from './coding.png';
+import coding_img from './code_test_view.png';
 
 function page() {
   return (
