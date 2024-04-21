@@ -18,8 +18,8 @@ import {
 import { ChatMessage } from './ai_prompt/components/chat-message';
 
 export default function Page() {
-  const [messageList, setMessageList] = useState<Message[]>(sampleMessages);
-  const [isNewPrompt, setIsNewPrompt] = useState<boolean>(true);
+  const isNewPrompt = true;
+
   const [selectedPrompt, setSelectedPrompt] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -32,7 +32,7 @@ export default function Page() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messageList]);
+  }, [messages]);
 
   useEffect(() => {
     console.log(selectedPrompt);
