@@ -148,13 +148,11 @@ export async function checkGenieYamlExistence({
   owner,
   repository: repo,
   branch,
-  latestCommitSha,
 }: {
   octokit: any;
   owner: string;
   repository: string;
   branch: string;
-  latestCommitSha: string;
 }) {
   const genieYamlPath = '.github/workflows/genie.yaml';
 
@@ -176,7 +174,6 @@ export async function checkGenieYamlExistence({
         repository: repo,
         octokit,
         branch,
-        latestCommitSha,
       });
       return;
     }
@@ -207,13 +204,15 @@ async function createWorkflowDirectory({
 
     let contentData = await res.data;
 
+    console.log('.github content data', contentData);
+
     // If .github directory doesn't exist, create a dummy file within it
-    if (!contentData || contentData.type !== 'dir') {
+    if (!contentData) {
       await octokit.rest.repos.createOrUpdateFileContents({
         owner,
         repo,
         path: '.github/dummy',
-        message: 'Create dummy file in .github directory',
+        message: 'Genie: Create dummy file in .github directory',
         // Encode the content as Base64
         content: Buffer.from(
           'This file is created to initialize the .github directory'
@@ -232,13 +231,15 @@ async function createWorkflowDirectory({
 
     contentData = await res.data;
 
+    console.log('.github/workflows content data', contentData);
+
     // If workflows directory doesn't exist, create it
-    if (!contentData || contentData.type !== 'dir') {
+    if (!contentData) {
       await octokit.rest.repos.createOrUpdateFileContents({
         owner,
         repo,
         path: '.github/workflows/dummy',
-        message: 'Create dummy file in .github/workflows directory',
+        message: 'Genie: Create dummy file in .github/workflows directory',
         // Encode the content as Base64
         content: Buffer.from(
           'This file is created to initialize the .github/workflows directory'
@@ -257,13 +258,11 @@ export async function createGenieYaml({
   owner,
   repository,
   branch,
-  latestCommitSha,
 }: {
   octokit: any;
   owner: string;
   repository: string;
   branch: string;
-  latestCommitSha: string;
 }) {
   const genieYamlPath = '.github/workflows/genie.yaml'; // Corrected path
   const genieYamlContent =

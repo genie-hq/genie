@@ -73,7 +73,6 @@ export async function POST(req: Request) {
     owner: username,
     repository,
     branch: target_branch,
-    latestCommitSha: branch.object.sha,
   });
 
   const latestCommitSHA = await getLatestCommitSHA({

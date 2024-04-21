@@ -30,9 +30,6 @@ export async function getInstallationTokens({
       return new Response('Installation info not found', { status: 404 });
     }
 
-    console.log('data:', data);
-    console.log('expiresAt:', data.expires_at);
-
     var accessToken = data.access_token;
     var expiresAt = null;
 

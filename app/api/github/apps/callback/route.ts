@@ -87,7 +87,7 @@ async function createUserInstallationToken(
   userId: string,
   installationId: string,
   accessToken: string,
-  expiresAt: string,
+  expiresAt: string
 ) {
   try {
     const { data, error } = await supabase
@@ -96,7 +96,7 @@ async function createUserInstallationToken(
         user_id: userId,
         installation_id: installationId,
         access_token: accessToken,
-        expires_at: expiresAt
+        expires_at: expiresAt,
       });
 
     if (error) {
