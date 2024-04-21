@@ -168,13 +168,32 @@ export async function checkGenieYamlExistence({
   } catch (error: any) {
     // If the error is not found, create the .github/workflows directory and the genie.yaml file
     if (error.status === 404) {
-      await createWorkflowDirectory({ octokit, owner, repo, branch });
+      await checkAndCreateDummyDirectory({
+        octokit,
+        owner,
+        repo,
+        branch,
+        directoryPath: '.github',
+        dummyMessage: 'Genie: Create dummy file in .github directory',
+      });
+
+      // Create or handle .github/workflows directory
+      await checkAndCreateDummyDirectory({
+        octokit,
+        owner,
+        repo,
+        branch,
+        directoryPath: '.github/workflows',
+        dummyMessage: 'Genie: Create dummy file in .github/workflows directory',
+      });
+
       await createGenieYaml({
         owner,
         repository: repo,
         octokit,
         branch,
       });
+
       return;
     }
     // If the error is other than 404, re-throw it
@@ -215,53 +234,20 @@ async function checkAndCreateDummyDirectory({
         path: `${directoryPath}/dummy`,
         message: dummyMessage,
         // Encode the content as Base64
-        content: Buffer.from(`This file is created to initialize the ${directoryPath} directory`).toString('base64'),
+        content: Buffer.from(
+          `This file is created to initialize the ${directoryPath} directory`
+        ).toString('base64'),
         branch,
       });
     }
   } catch (error) {
-    console.error(`Error creating or updating directory ${directoryPath}:`, error);
+    console.error(
+      `Error creating or updating directory ${directoryPath}:`,
+      error
+    );
     throw error;
   }
 }
-
-async function createWorkflowDirectory({
-  octokit,
-  owner,
-  repo,
-  branch,
-}: {
-  octokit: any;
-  owner: string;
-  repo: string;
-  branch: string;
-}) {
-  try {
-    // Create or handle .github directory
-    await checkAndCreateDummyDirectory({
-      octokit,
-      owner,
-      repo,
-      branch,
-      directoryPath: '.github',
-      dummyMessage: 'Genie: Create dummy file in .github directory',
-    });
-
-    // Create or handle .github/workflows directory
-    await checkAndCreateDummyDirectory({
-      octokit,
-      owner,
-      repo,
-      branch,
-      directoryPath: '.github/workflows',
-      dummyMessage: 'Genie: Create dummy file in .github/workflows directory',
-    });
-  } catch (error) {
-    console.error('Error creating workflows directory:', error);
-    throw error;
-  }
-}
-
 
 export async function createGenieYaml({
   octokit,
