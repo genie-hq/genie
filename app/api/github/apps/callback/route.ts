@@ -15,9 +15,8 @@ export async function GET(req: Request) {
   // Handle installation failure
   if (installationId == null) {
     return NextResponse.redirect(
-        `https://intelligenie.vercel.app/installation-failed?error=${error}&description=${errorDescription}`
-      );
-    
+      `https://intelligenie.vercel.app/installation-failed?error=${error}&description=${errorDescription}`
+    );
   }
 
   // Retrieve the userId
@@ -34,20 +33,21 @@ export async function GET(req: Request) {
 
   // Obtain installation access token using installation ID
   const accessToken = await getAccessToken(installationId);
-  console.log(`Access token: ${accessToken}`);
+  console.log(`Access token: ${accessToken.token}`);
 
-  await updateUserInstallationToken(
+  await createUserInstallationToken(
     supabase,
     userId,
     installationId,
-    accessToken
+    accessToken.token,
+    accessToken.expires_at
   );
 
   // Redirect to the installation page of your GitHub app
   return NextResponse.redirect(`https://intelligenie.vercel.app/new`);
 }
 
-async function getAccessToken(installationId: string) {
+export async function getAccessToken(installationId: string) {
   const jwtToken = generateJWT();
 
   const response = await fetch(
@@ -63,7 +63,7 @@ async function getAccessToken(installationId: string) {
   );
 
   const data = await response.json();
-  return data.token;
+  return data;
 }
 
 function generateJWT() {
@@ -75,18 +75,19 @@ function generateJWT() {
   const payload = {
     iat: Math.floor(Date.now() / 1000), // Issued at time
     exp: Math.floor(Date.now() / 1000) + 60, // Expiration time (1 minute from now)
-    iss: appId, 
+    iss: appId,
   };
 
   const token = jwt.sign(payload, privateKey, { algorithm: 'RS256' });
   return token;
 }
 
-async function updateUserInstallationToken(
+async function createUserInstallationToken(
   supabase: any,
   userId: string,
   installationId: string,
-  accessToken: string
+  accessToken: string,
+  expiresAt: string,
 ) {
   try {
     const { data, error } = await supabase
@@ -95,6 +96,7 @@ async function updateUserInstallationToken(
         user_id: userId,
         installation_id: installationId,
         access_token: accessToken,
+        expires_at: expiresAt
       });
 
     if (error) {
