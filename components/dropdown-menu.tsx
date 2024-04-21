@@ -24,13 +24,20 @@ interface Option {
 
 interface DropdownMenuProps {
   title: string;
+  value: string;
+  setValue: (value: string) => void;
   options: Option[];
   className?: string;
 }
 
-export function DropdownMenu({ title, options, className }: DropdownMenuProps) {
+export function DropdownMenu({
+  title,
+  options,
+  value,
+  setValue,
+  className,
+}: DropdownMenuProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -30,6 +30,14 @@ export default async function Page({
     )
     .eq('test_file_id', fileId);
 
+  const versionsQuery = supabase
+    .from('test_file_versions')
+    .select('id', {
+      count: 'exact',
+      head: true,
+    })
+    .eq('test_file_id', fileId);
+
   if (fileVersion === 'latest') {
     fileQuery.order('created_at', { ascending: false });
   } else {
@@ -37,8 +45,10 @@ export default async function Page({
   }
 
   const { data: file, error } = await fileQuery.limit(1).single();
-  console.log(file, error);
-  if (error || !file) notFound();
+  const { count: versions, error: versionsError } = await versionsQuery;
+  if (error || versionsError || !file || !versions) notFound();
 
-  return <TestFileReprompt file={{ ...file, version: fileVersion }} />;
+  return (
+    <TestFileReprompt file={{ ...file, version: fileVersion, versions }} />
+  );
 }

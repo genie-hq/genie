@@ -1,5 +1,5 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { generateTestFile } from '../helpers';
+import { generateTestFile } from '../../../../helpers';
 import { cookies } from 'next/headers';
 
 // IMPORTANT! Set the runtime to edge
