@@ -1,5 +1,5 @@
 <a href="https://intelligenie.vercel.app/">
-  <img alt="Genie Main Page" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
+  <img alt="Genie Landing Page" src="./public/genie-landing-page.png">
   <h1 align="center">Genie 🤖</h1>
 </a>
 
