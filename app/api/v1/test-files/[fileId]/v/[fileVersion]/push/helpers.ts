@@ -199,45 +199,6 @@ export async function checkGenieYamlExistence({
   }
 }
 
-export async function checkTestDirExistence({
-  octokit,
-  owner,
-  repository: repo,
-  branch,
-}: {
-  octokit: any;
-  owner: string;
-  repository: string;
-  branch: string;
-}) {
-  try {
-    const res = await octokit.rest.repos.getContent({
-      owner,
-      repo,
-      path: '__tests__',
-      ref: branch,
-    });
-
-    if (res.status === 200) return;
-  } catch (error: any) {
-    // If the error is not found, create the __tests__ directory and the test file
-    if (error.status === 404) {
-      await checkAndCreateDummyDirectory({
-        octokit,
-        owner,
-        repo,
-        branch,
-        directoryPath: '__tests__',
-        dummyMessage: 'chore: create dummy file in __tests__ directory',
-      });
-
-      return;
-    }
-    // If the error is other than 404, re-throw it
-    throw error;
-  }
-}
-
 async function checkAndCreateDummyDirectory({
   octokit,
   owner,
