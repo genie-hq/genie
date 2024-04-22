@@ -7,7 +7,15 @@ import { ChatMessage } from '../components/chat-message';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/dropdown-menu';
 import { useRouter } from 'next/navigation';
-import { Check, CloudUpload, FileCheck, LoaderIcon, X } from 'lucide-react';
+import {
+  ArrowDownFromLine,
+  ArrowUpFromLine,
+  Check,
+  CloudUpload,
+  FileCheck,
+  LoaderIcon,
+  X,
+} from 'lucide-react';
 import { extractCodeContent } from '@/utils/parsers/codeblock';
 import FilePathDialog from '@/components/file-path-dialog';
 
@@ -154,7 +162,7 @@ export default function TestFileReprompt({
         {/* Output View */}
         {file?.id && file?.version && (
           <div>
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between gap-2 p-4">
               <div>
                 <FilePathDialog
                   file={file}
@@ -162,7 +170,9 @@ export default function TestFileReprompt({
                   setOpened={setShowSetup}
                 />
                 <div className="flex items-center gap-2">
-                  <div className="text-lg font-bold">{file.name}</div>
+                  <div className="text-lg font-bold line-clamp-1">
+                    {file.name}
+                  </div>
                   <div className="text-sm bg-foreground text-background font-semibold rounded px-1">
                     {file.version === 'latest' ? 'Latest' : `v${file.version}`}
                   </div>
@@ -200,8 +210,14 @@ export default function TestFileReprompt({
               <Button
                 onClick={() => setCollapsed(!collapsed)}
                 variant="secondary"
+                size="icon"
+                className="flex-shrink-0"
               >
-                {collapsed ? 'Expand' : 'Collapse'}
+                {collapsed ? (
+                  <ArrowDownFromLine className="w-4 h-4" />
+                ) : (
+                  <ArrowUpFromLine className="w-4 h-4" />
+                )}
               </Button>
             </div>
             <div
