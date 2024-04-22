@@ -9,6 +9,7 @@ import { DropdownMenu } from '@/components/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { Check, CloudUpload, FileCheck, LoaderIcon, X } from 'lucide-react';
 import { extractCodeContent } from '@/utils/parsers/codeblock';
+import FilePathDialog from '@/components/file-path-dialog';
 
 export default function TestFileReprompt({
   file,
@@ -155,16 +156,11 @@ export default function TestFileReprompt({
           <div>
             <div className="flex items-center justify-between p-4">
               <div>
-                <button
-                  className="opacity-50 hover:opacity-100 text-start transition hover:underline"
-                  onClick={() => {
-                    setOpened(true);
-                    setShowSetup(true);
-                  }}
-                >
-                  {file.github_username}/{file.repository}/{file.target_branch}
-                  {file.file_path}
-                </button>
+                <FilePathDialog
+                  file={file}
+                  opened={showSetup}
+                  setOpened={setShowSetup}
+                />
                 <div className="flex items-center gap-2">
                   <div className="text-lg font-bold">{file.name}</div>
                   <div className="text-sm bg-foreground text-background font-semibold rounded px-1">
@@ -288,9 +284,7 @@ export default function TestFileReprompt({
             <InputBar
               file={file}
               opened={opened}
-              showSetup={showSetup}
               setOpened={setOpened}
-              setShowSetup={setShowSetup}
               input={input}
               handleInputChange={handleInputChange}
             />
