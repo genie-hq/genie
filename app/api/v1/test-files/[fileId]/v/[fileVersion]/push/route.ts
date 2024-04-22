@@ -4,6 +4,7 @@ import {
   upsertTestFile,
   getLatestCommitSHA,
   checkGenieYamlExistence,
+  checkTestDirExistence,
 } from './helpers';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
@@ -54,6 +55,13 @@ export async function POST(req: Request, { params: { fileId } }: Params) {
   });
 
   await checkGenieYamlExistence({
+    octokit,
+    owner: username,
+    repository,
+    branch: target_branch,
+  });
+
+  await checkTestDirExistence({
     octokit,
     owner: username,
     repository,
