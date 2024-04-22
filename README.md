@@ -27,7 +27,7 @@
 ## Requirements 📋
 
 - Genie is currently available for use in a Node.js environment with TypeScript and Vitest.
-- For the test automation feature, we can only provide support for repositories that you own, as this is restricted by GitHub's access policies.
+- Currently, the test automation feature supports only repositories that you own. However, we plan to extend this support in the future. Stay tuned for updates!
 
 ## Features 🌟
 
