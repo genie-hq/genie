@@ -13,6 +13,7 @@ interface Props {
   setOpened: (opened: boolean) => void;
   input: string;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const InputBar: FC<Props> = ({
@@ -21,12 +22,18 @@ export const InputBar: FC<Props> = ({
   setOpened,
   input,
   handleInputChange,
+  handleSubmit,
 }) => {
   return (
     <div className="p-4 w-full">
       <form
         className="flex gap-2 w-full"
         onSubmit={(e) => {
+          if (file) {
+            handleSubmit(e);
+            return;
+          }
+
           e.preventDefault();
           setOpened(true);
         }}
@@ -43,12 +50,14 @@ export const InputBar: FC<Props> = ({
           }
         />
 
-        <CreateTestFileDialog
-          file={file}
-          opened={opened}
-          setOpened={setOpened}
-          prompt={input}
-        />
+        {!!file || (
+          <CreateTestFileDialog
+            file={file}
+            opened={opened}
+            setOpened={setOpened}
+            prompt={input}
+          />
+        )}
       </form>
     </div>
   );

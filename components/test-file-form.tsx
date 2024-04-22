@@ -31,6 +31,7 @@ const FormSchema = z.object({
   repository: z.string().min(1),
   reference_branch: z.string().min(1),
   target_branch: z.string().min(1),
+  file_path: z.string().min(1),
 });
 
 export default function TestFileForm({
@@ -57,6 +58,7 @@ export default function TestFileForm({
       repository: '',
       reference_branch: '',
       target_branch: '',
+      file_path: '/__tests__/new.test.tsx',
     },
   });
 
@@ -136,7 +138,7 @@ export default function TestFileForm({
         target_branch: data.target_branch,
         test_library: 'Vitest',
         test_framework: 'TypeScript',
-        file_path: '/__tests__/new.test.tsx',
+        file_path: data.file_path,
       }),
     });
 
@@ -292,6 +294,25 @@ export default function TestFileForm({
                           <Input
                             id="target-branch"
                             placeholder="Target Branch"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </InputCard>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="file_path"
+                  render={({ field }) => (
+                    <InputCard title="File Path" className="col-span-full">
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Input
+                            id="file-path"
+                            placeholder="File Path"
                             {...field}
                           />
                         </FormControl>

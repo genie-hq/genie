@@ -47,6 +47,7 @@ export default async function Page({
   const { data: file, error } = await fileQuery.limit(1).single();
   const { count: versions, error: versionsError } = await versionsQuery;
   if (error || versionsError || !file || !versions) notFound();
+  if (fileVersion === 'latest') redirect(`/files/${fileId}/v/${versions - 1}`);
 
   return (
     <TestFileReprompt file={{ ...file, version: fileVersion, versions }} />
