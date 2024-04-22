@@ -32,7 +32,7 @@ export default function TestFileReprompt({
 }) {
   const router = useRouter();
 
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const { messages, input, isLoading, handleInputChange, reload } = useChat({
     api: file?.id
       ? file.versions === 1
