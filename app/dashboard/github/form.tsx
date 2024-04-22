@@ -41,6 +41,7 @@ export default function GithubForm() {
   const router = useRouter();
 
   const [branches, setBranches] = useState<string[]>([]);
+  const [isFirst, setIsFirst] = useState(false); // State for isFirst
 
   const [response, setResponse] = useState<any>(null);
   const [saving, setSaving] = useState(false);
@@ -48,8 +49,8 @@ export default function GithubForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: 'genie-hq',
-      repository: 'genie',
+      username: '',
+      repository: '',
       reference_branch: '',
       target_branch: '',
       path: '/__tests__/new.test.tsx',
@@ -82,6 +83,8 @@ export default function GithubForm() {
 
   useEffect(() => {
     async function fetchBranches() {
+      if (!isFirst) return; // Only fetch branches if it's the first time
+
       const res = await fetch(`/api/github/${username}/${repository}/branches`);
       if (!res.ok) {
         setBranches([]);
@@ -104,10 +107,13 @@ export default function GithubForm() {
 
       // validate the form after setting the default values
       form.trigger();
+
+      // Set isFirst to true after the first execution
+      setIsFirst(true);
     }
 
     fetchBranches();
-  }, [username, repository]);
+  }, [username, repository, isFirst]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setSaving(true);
