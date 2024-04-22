@@ -9,7 +9,7 @@
 
 <p align="center">
 <a href="#developers-"><strong>Developers</strong></a> ·
-  <a href="#prerequisites-"><strong>Prerequisites</strong></a> ·  
+  <a href="#requirements-"><strong>Requirements</strong></a> ·  
   <a href="#features-"><strong>Features</strong></a> ·  
   <a href="#getting-started-"><strong>Getting Started</strong></a> ·
    <a href="#how-to-run-locally-"><strong>How to run locally</strong></a> ·
@@ -24,9 +24,10 @@
 - Luong Quang Huy <a href="https://github.com/WMumei" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 - Doan Huu Quoc (Mudoker) <a href="https://github.com/Mudoker" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 
-## Prerequisites 📋
+## Requirements 📋
 
 - Genie is currently available for use in a Node.js environment with TypeScript and Vitest.
+- For the test automation feature, we can only provide support for repositories that you own, as this is restricted by GitHub's access policies.
 
 ## Features 🌟
 
