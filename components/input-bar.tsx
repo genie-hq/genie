@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { CreateTestFileDialog } from './create-test-file-dialog';
 import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { Send } from 'lucide-react';
 
 interface Props {
   file?: {
@@ -13,7 +15,7 @@ interface Props {
   setOpened: (opened: boolean) => void;
   input: string;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmit: (prompt: string) => void;
 }
 
 export const InputBar: FC<Props> = ({
@@ -29,12 +31,13 @@ export const InputBar: FC<Props> = ({
       <form
         className="flex gap-2 w-full"
         onSubmit={(e) => {
+          e.preventDefault();
+
           if (file) {
-            handleSubmit(e);
+            handleSubmit(input);
             return;
           }
 
-          e.preventDefault();
           setOpened(true);
         }}
       >
@@ -50,7 +53,11 @@ export const InputBar: FC<Props> = ({
           }
         />
 
-        {!!file || (
+        {!!file?.id ? (
+          <Button type="submit" variant="ghost" size="icon" disabled={!input}>
+            <Send className="w-6 h-6" />
+          </Button>
+        ) : (
           <CreateTestFileDialog
             file={file}
             opened={opened}

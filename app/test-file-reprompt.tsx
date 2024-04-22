@@ -45,7 +45,9 @@ export default function TestFileReprompt({
     api: file?.id
       ? file.versions === 1
         ? `/api/v1/test-files/${file.id}/v/${file.version}/generate?fileVersionId=${file.version_id}`
-        : `/api/v1/test-files/${file.id}/v/${file.version}/improve`
+        : file.versions > 0 && file.prompt && file.code
+        ? undefined
+        : `/api/v1/test-files/${file.id}/v/${file.version}/improve?fileVersionId=${file.version_id}`
       : undefined,
     initialMessages: file?.code
       ? [
@@ -76,6 +78,7 @@ export default function TestFileReprompt({
   useEffect(() => {
     if (!file || isLoading) return;
     if (messages[messages.length - 1]?.role !== 'user') return;
+    if (file && file.versions > 0 && file.prompt && file.code) return;
 
     // Reload the chat if the user sends a message
     // but the AI did not respond yet after 1 second
@@ -156,6 +159,30 @@ export default function TestFileReprompt({
   const [opened, setOpened] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
 
+  const handleImprovement = async (prompt: string) => {
+    if (!file) return;
+    let temp = prompt;
+    handleInputChange({ target: { value: '' } } as any);
+
+    const res = await fetch(`/api/v1/test-files/${file.id}/v`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt,
+        test_file_id: file.id,
+      }),
+    });
+
+    if (res.ok) {
+      router.push(`/files/${file.id}/v/latest`);
+      router.refresh();
+    } else {
+      handleInputChange({ target: { value: temp } } as any);
+    }
+  };
+
   return (
     <div className="h-full w-full flex">
       <div className="flex flex-col w-full justify-between">
@@ -230,7 +257,7 @@ export default function TestFileReprompt({
                 collapsed
                   ? 'h-0 opacity-0'
                   : 'p-2 md:p-4 pb-0 md:pb-0 h-fit border-b opacity-100'
-              } overflow-auto border-t transition-all`}
+              } overflow-hidden border-t transition-all`}
             >
               <ChatMessage
                 message={{
@@ -283,13 +310,13 @@ export default function TestFileReprompt({
                   setValue={(value) =>
                     router.push(`/files/${file?.id}/v/${value}`)
                   }
-                  options={[
-                    { label: 'Latest', value: 'latest' },
-                    ...Array.from({ length: file?.versions || 0 }, (_, i) => ({
+                  options={Array.from(
+                    { length: file?.versions || 0 },
+                    (_, i) => ({
                       label: `Version ${i}`,
                       value: `${i}`,
-                    })),
-                  ]}
+                    })
+                  )}
                   className="pointer-events-auto"
                 />
               </div>
@@ -303,6 +330,7 @@ export default function TestFileReprompt({
               setOpened={setOpened}
               input={input}
               handleInputChange={handleInputChange}
+              handleSubmit={handleImprovement}
             />
           </div>
         </div>

@@ -57,7 +57,8 @@ async function getWorkflows({
         repo: repo,
         branch: branch,
       });
-    const latestWorkflowRunId = workflowRuns.workflow_runs[0].id;
+    const latestWorkflowRunId = workflowRuns?.workflow_runs?.[0]?.id;
+    if (!latestWorkflowRunId) return { conclusion: 'success', logs: null };
 
     const { data: workflowRun } = await octokit.rest.actions.getWorkflowRun({
       owner,
