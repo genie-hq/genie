@@ -11,6 +11,7 @@ import { getInstallationTokens } from '../../../../../../github/get-installaion-
 import { Octokit } from 'octokit';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
 
 interface Params {
   params: {

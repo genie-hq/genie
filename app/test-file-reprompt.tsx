@@ -46,29 +46,29 @@ export default function TestFileReprompt({
       ? file.versions === 1
         ? `/api/v1/test-files/${file.id}/v/${file.version}/generate?fileVersionId=${file.version_id}`
         : file.versions > 0 && file.prompt && file.code
-          ? undefined
-          : `/api/v1/test-files/${file.id}/v/${file.version}/improve?fileVersionId=${file.version_id}`
+        ? undefined
+        : `/api/v1/test-files/${file.id}/v/${file.version}/improve?fileVersionId=${file.version_id}`
       : undefined,
     initialMessages: file?.code
       ? [
-        {
-          id: 'prompt',
-          role: 'user',
-          content: file?.prompt || '',
-        },
-        {
-          id: 'assistant',
-          role: 'assistant',
-          content: file.code,
-        },
-      ]
+          {
+            id: 'prompt',
+            role: 'user',
+            content: file?.prompt || '',
+          },
+          {
+            id: 'assistant',
+            role: 'assistant',
+            content: file.code,
+          },
+        ]
       : [
-        {
-          id: 'prompt',
-          role: 'user',
-          content: file?.prompt || '',
-        },
-      ],
+          {
+            id: 'prompt',
+            role: 'user',
+            content: file?.prompt || '',
+          },
+        ],
   });
 
   useEffect(() => {
@@ -119,74 +119,81 @@ export default function TestFileReprompt({
   const [pushing, setPushing] = useState(false);
   const [pushError, setPushError] = useState('');
 
-  const
-    pushFile = async () => {
-      if (!file) return;
-      setPushing(true);
+  const pushFile = async () => {
+    if (!file) return;
+    setPushing(true);
 
-      const res = await fetch(
-        `/api/v1/test-files/${file.id}/v/${file.versions}/push?fileVersionId=${file.version_id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: file?.github_username,
-            repository: file?.repository,
-            reference_branch: file?.branch,
-            target_branch: file?.target_branch,
-            path: file?.file_path,
-            content: extractCodeContent(file.code),
-            commit_message:
-              file?.versions === 0
-                ? 'chore(tests): add initial test file'
-                : `chore(tests): update test file (v${file?.versions - 1})`,
-          }),
-        }
-      );
-      router.refresh();
-
-      if (!res.ok) {
-        const data = await res.json();
-        setPushError(data.error);
-        setPushing(false);
-        return;
+    const res = await fetch(
+      `/api/v1/test-files/${file.id}/v/${file.versions}/push?fileVersionId=${file.version_id}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: file?.github_username,
+          repository: file?.repository,
+          reference_branch: file?.branch,
+          target_branch: file?.target_branch,
+          path: file?.file_path,
+          content: extractCodeContent(file.code),
+          commit_message:
+            file?.versions === 0
+              ? 'chore(tests): add initial test file'
+              : `chore(tests): update test file (v${file?.versions - 1})`,
+        }),
       }
+    );
+    router.refresh();
 
-      router.refresh();
-    };
+    if (!res.ok) {
+      const data = await res.json();
+      setPushError(data.error);
+      setPushing(false);
+      return;
+    }
+
+    router.refresh();
+  };
 
   const [opened, setOpened] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
 
   const handleImprovement = async (prompt: string) => {
-    if (!file) return;
     let temp = prompt;
     handleInputChange({ target: { value: '' } } as any);
 
-    const res = await fetch(file?.id ? `/api/v1/test-files/${file.id}/v` : `/api/v1/test-files`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(file?.id ? {
-        prompt,
-        test_file_id: file.id,
-      } : {
-        name: prompt,
-        github_username: '',
-        repository: '',
-        branch: '',
-        target_branch: '',
-        test_library: 'Vitest',
-        test_framework: 'TypeScript',
-        file_path: '',
-      }),
-    });
+    const res = await fetch(
+      file?.id ? `/api/v1/test-files/${file.id}/v` : `/api/v1/test-files`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+          file?.id
+            ? {
+                prompt,
+                test_file_id: file.id,
+              }
+            : {
+                name: prompt,
+                github_username: '',
+                repository: '',
+                branch: '',
+                target_branch: '',
+                test_library: 'Vitest',
+                test_framework: 'TypeScript',
+                file_path: '',
+              }
+        ),
+      }
+    );
 
     if (res.ok) {
-      router.push(`/files/${file.id}/v/latest`);
+      const data = await res.json();
+      const fileId = file?.id || data.id;
+      router.push(`/files/${fileId}/v/latest`);
       router.refresh();
     } else {
       handleInputChange({ target: { value: temp } } as any);
@@ -207,7 +214,7 @@ export default function TestFileReprompt({
     }
 
     setOpened(true);
-  }
+  };
 
   return (
     <div className="h-full w-full flex">
@@ -278,14 +285,16 @@ export default function TestFileReprompt({
               </Button>
             </div>
             <div
-              className={`${collapsed ? 'opacity-100' : 'opacity-0'
-                } border-b transition`}
+              className={`${
+                collapsed ? 'opacity-100' : 'opacity-0'
+              } border-b transition`}
             />
             <div
-              className={`${collapsed
-                ? 'h-0 opacity-0'
-                : 'p-2 md:p-4 pb-0 md:pb-0 h-fit border-b opacity-100'
-                } overflow-hidden border-t transition-all`}
+              className={`${
+                collapsed
+                  ? 'h-0 opacity-0'
+                  : 'p-2 md:p-4 pb-0 md:pb-0 h-fit border-b opacity-100'
+              } overflow-hidden border-t transition-all`}
             >
               <ChatMessage
                 message={{
@@ -307,12 +316,15 @@ export default function TestFileReprompt({
 
               {file.code && (
                 <div className="flex items-center justify-center gap-2 mb-4">
-                  <Button onClick={handlePush} disabled={file.pushed || pushing}>
+                  <Button
+                    onClick={handlePush}
+                    disabled={file.pushed || pushing}
+                  >
                     {file.pushed
                       ? 'File successfully pushed to GitHub.'
                       : pushing
-                        ? 'Pushing...'
-                        : 'Push to GitHub'}
+                      ? 'Pushing...'
+                      : 'Push to GitHub'}
                   </Button>
                   {pushError && (
                     <div className="text-red-500 text-sm">{pushError}</div>

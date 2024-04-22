@@ -1,5 +1,5 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { createTestFile } from './helpers';
+import { createTestFile, updateTestFile } from './helpers';
 import { cookies } from 'next/headers';
 
 // IMPORTANT! Set the runtime to edge
@@ -21,4 +21,20 @@ export async function POST(req: Request) {
   if (!user) return new Response('Unauthorized', { status: 401 });
 
   return createTestFile(data);
+}
+
+export async function PATCH(req: Request) {
+  const data = await req.json();
+
+  const supabase = createServerComponentClient({
+    cookies,
+  });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return new Response('Unauthorized', { status: 401 });
+
+  return updateTestFile(data);
 }

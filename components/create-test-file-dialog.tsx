@@ -1,16 +1,12 @@
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
-import { Send } from 'lucide-react';
 import TestFileForm from './test-file-form';
 import InputCard from './input-card';
-import FileUpdateForm from './file-update-form';
 import { Separator } from './ui/separator';
 
 export function CreateTestFileDialog({
@@ -21,6 +17,7 @@ export function CreateTestFileDialog({
 }: {
   file?: {
     id: string;
+    name: string;
     version: string;
     code: string;
     file_path: string;
@@ -55,7 +52,13 @@ export function CreateTestFileDialog({
           </>
         )}
 
-        <TestFileForm prompt={prompt} close={() => setOpened(false)} />
+        {file?.id && (
+          <TestFileForm
+            file={file}
+            prompt={prompt}
+            close={() => setOpened(false)}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

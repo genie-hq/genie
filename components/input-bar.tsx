@@ -9,6 +9,7 @@ import { toast } from '@/components/ui/use-toast';
 interface Props {
   file?: {
     id: string;
+    name: string;
     version: string;
     code: string;
     file_path: string;
@@ -66,10 +67,11 @@ export const InputBar: FC<Props> = ({
 
   return (
     <div
-      className={`${disabled
-        ? 'h-0 overflow-hidden pointer-events-none cursor-default'
-        : 'p-4 w-full'
-        }`}
+      className={`${
+        disabled
+          ? 'h-0 overflow-hidden pointer-events-none cursor-default'
+          : 'p-4 w-full'
+      }`}
     >
       <form
         className="flex gap-2 w-full"

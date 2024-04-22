@@ -25,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Separator } from './ui/separator';
 
 const FormSchema = z.object({
   username: z.string().optional(),
@@ -37,9 +36,17 @@ const FormSchema = z.object({
 
 export default function TestFileForm({
   prompt,
+  file,
   close,
 }: {
   prompt: string;
+  file: {
+    id: string;
+    name: string;
+    version: string;
+    code: string;
+    file_path: string;
+  };
   close: () => void;
 }) {
   const router = useRouter();
@@ -47,7 +54,6 @@ export default function TestFileForm({
   const [branches, setBranches] = useState<string[]>([]);
 
   const [checking, setChecking] = useState(true);
-  const [useGHI, setUseGHI] = useState(true);
   const [requireInstall, setRequireInstall] = useState(true);
 
   const [saving, setSaving] = useState(false);
@@ -86,7 +92,7 @@ export default function TestFileForm({
 
   useEffect(() => {
     async function fetchBranches() {
-      if (!username || !repository || !useGHI) {
+      if (!username || !repository) {
         setBranches([]);
         setRequireInstall(true);
         setChecking(false);
@@ -134,26 +140,25 @@ export default function TestFileForm({
     setSaving(true);
 
     const res = await fetch('/api/v1/test-files', {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: prompt,
-        github_username: useGHI ? data.username : '',
-        repository: useGHI ? data.repository : '',
-        branch: useGHI ? data.reference_branch : '',
-        target_branch: useGHI ? data.target_branch : '',
+        id: file?.id,
+        name: file?.name,
+        github_username: data.username,
+        repository: data.repository,
+        branch: data.reference_branch,
+        target_branch: data.target_branch,
         test_library: 'Vitest',
         test_framework: 'TypeScript',
-        file_path: useGHI ? data.file_path : '',
+        file_path: data.file_path,
       }),
     });
 
     if (res.ok) {
-      const { id } = await res.json();
-
-      router.push(`/files/${id}/v/latest`);
+      router.push(`/files/${file.id}/v/latest`);
       router.refresh();
       close();
     } else {
@@ -245,23 +250,6 @@ export default function TestFileForm({
                     ? 'Checking installation...'
                     : 'Install Genie on GitHub'}
                 </Button>
-                {checking || (
-                  <>
-                    <Separator className="col-span-full" />
-                    <Button
-                      type="button"
-                      className="col-span-full"
-                      variant="secondary"
-                      onClick={() => {
-                        setUseGHI(false);
-                        onSubmit(form.getValues());
-                      }}
-                      disabled={checking}
-                    >
-                      Continue without GitHub Integration
-                    </Button>
-                  </>
-                )}
               </>
             ) : (
               <>
@@ -351,7 +339,7 @@ export default function TestFileForm({
             )}
 
             {requireInstall || (
-              <div className="col-span-full flex justify-end">
+              <div className="col-span-full w-full">
                 <Button
                   type="button"
                   onClick={form.handleSubmit(onSubmit)}
@@ -360,8 +348,9 @@ export default function TestFileForm({
                     form.formState.isSubmitting ||
                     !form.formState.isValid
                   }
+                  className="w-full"
                 >
-                  {saving ? 'Creating...' : 'Create Test File'}
+                  {saving ? 'Updating...' : 'Update File Setup'}
                 </Button>
               </div>
             )}
