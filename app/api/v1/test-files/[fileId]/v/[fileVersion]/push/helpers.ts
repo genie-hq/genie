@@ -214,21 +214,21 @@ export async function checkTestDirExistence({
     const res = await octokit.rest.repos.getContent({
       owner,
       repo,
-      path: '__test__',
+      path: '__tests__',
       ref: branch,
     });
 
     if (res.status === 200) return;
   } catch (error: any) {
-    // If the error is not found, create the __test__ directory and the test file
+    // If the error is not found, create the __tests__ directory and the test file
     if (error.status === 404) {
       await checkAndCreateDummyDirectory({
         octokit,
         owner,
         repo,
         branch,
-        directoryPath: '__test__',
-        dummyMessage: 'chore: create dummy file in __test__ directory',
+        directoryPath: '__tests__',
+        dummyMessage: 'chore: create dummy file in __tests__ directory',
       });
 
       return;
