@@ -134,20 +134,47 @@ export async function generateTestFile({
   return new StreamingTextResponse(stream);
 }
 
+export async function generateTestFileVersion({
+  prompt,
+  test_file_id,
+}: {
+  prompt: string;
+  test_file_id: string;
+}) {
+  const supabase = createRouteHandlerClient({
+    cookies,
+  });
+
+  const { data, error } = await supabase
+    .from('test_file_versions')
+    .insert({
+      test_file_id,
+      prompt,
+    })
+    .eq('test_file_id', test_file_id);
+
+  if (error) {
+    console.error(error);
+    return NextResponse.json(error.message, { status: 500 });
+  }
+
+  return NextResponse.json({ message: 'OK' }, { status: 200 });
+}
+
 export async function regenerateTestFile({
   fileId,
+  fileVersionId,
   prevPrompt,
   prevFile,
   newPrompt,
 }: {
   fileId: string;
+  fileVersionId: string | null;
   prevPrompt: string;
   prevFile: string;
   newPrompt: string;
 }) {
-  const systemPrompt =
-    `\n\nThese were the requirements for the previous test cases: "${prevPrompt}"\n\nPrevious generated test file:\n${prevFile}\n\n` +
-    `Please re-generate your test cases for the new improvement prompt: "${newPrompt}". Provide the full file.`;
+  const systemPrompt = `Please re-generate your test cases that take into account my suggestion for improvement: "${newPrompt}". Provide the full test file and DO NOT provide explaination or anything else. Thank you.`;
 
   const geminiStream = await genAI
     .getGenerativeModel({
@@ -157,8 +184,25 @@ export async function regenerateTestFile({
     })
     .generateContentStream(
       buildGoogleGenAIPrompt([
+        {
+          id: 'user',
+          role: 'user',
+          content: prevPrompt,
+        },
+        {
+          id: 'assistant',
+          role: 'assistant',
+          content:
+            'I will create test cases in TypeScript using Vitest based on your requirements and provide the full file without saying anything else.',
+        },
+        {
+          id: 'user',
+          role: 'user',
+          content: 'Yes, please.',
+        },
+        { id: 'assistant', role: 'assistant', content: prevFile },
         { id: 'user', role: 'user', content: systemPrompt },
-      ])
+      ] as Message[])
     );
 
   const supabase = createRouteHandlerClient({
@@ -169,7 +213,13 @@ export async function regenerateTestFile({
     onCompletion: async (completion) => {
       const { error } = await supabase
         .from('test_file_versions')
-        .insert({ test_file_id: fileId, code: completion, prompt: newPrompt })
+        .upsert({
+          id: fileVersionId,
+          test_file_id: fileId,
+          code: completion,
+          prompt: newPrompt,
+        })
+        .eq('id', fileVersionId)
         .select('id')
         .single();
 

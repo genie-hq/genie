@@ -15,6 +15,9 @@ interface Params {
 }
 
 export async function POST(req: Request, { params: { fileId } }: Params) {
+  const { searchParams } = new URL(req.url);
+  const fileVersionId = searchParams.get('fileVersionId');
+
   const { messages } = await req.json();
 
   const supabase = createServerComponentClient({
@@ -30,8 +33,9 @@ export async function POST(req: Request, { params: { fileId } }: Params) {
   const { data, error } = await supabase
     .from('test_file_versions')
     .select('id, code, prompt')
-    .eq('id', fileId)
+    .eq('test_file_id', fileId)
     .order('created_at', { ascending: false })
+    .range(1, 1)
     .limit(1)
     .single();
 
@@ -44,6 +48,7 @@ export async function POST(req: Request, { params: { fileId } }: Params) {
 
   return regenerateTestFile({
     fileId,
+    fileVersionId,
     prevPrompt: data.prompt,
     prevFile: data.code,
     newPrompt: prompt,

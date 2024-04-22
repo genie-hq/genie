@@ -7,7 +7,15 @@ import { ChatMessage } from '../components/chat-message';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/dropdown-menu';
 import { useRouter } from 'next/navigation';
-import { Check, CloudUpload, FileCheck, LoaderIcon, X } from 'lucide-react';
+import {
+  ArrowDownFromLine,
+  ArrowUpFromLine,
+  Check,
+  CloudUpload,
+  FileCheck,
+  LoaderIcon,
+  X,
+} from 'lucide-react';
 import { extractCodeContent } from '@/utils/parsers/codeblock';
 import FilePathDialog from '@/components/file-path-dialog';
 
@@ -37,7 +45,9 @@ export default function TestFileReprompt({
     api: file?.id
       ? file.versions === 1
         ? `/api/v1/test-files/${file.id}/v/${file.version}/generate?fileVersionId=${file.version_id}`
-        : `/api/v1/test-files/${file.id}/v/${file.version}/improve`
+        : file.versions > 0 && file.prompt && file.code
+        ? undefined
+        : `/api/v1/test-files/${file.id}/v/${file.version}/improve?fileVersionId=${file.version_id}`
       : undefined,
     initialMessages: file?.code
       ? [
@@ -68,6 +78,7 @@ export default function TestFileReprompt({
   useEffect(() => {
     if (!file || isLoading) return;
     if (messages[messages.length - 1]?.role !== 'user') return;
+    if (file && file.versions > 0 && file.prompt && file.code) return;
 
     // Reload the chat if the user sends a message
     // but the AI did not respond yet after 1 second
@@ -148,60 +159,103 @@ export default function TestFileReprompt({
   const [opened, setOpened] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
 
+  const handleImprovement = async (prompt: string) => {
+    if (!file) return;
+    let temp = prompt;
+    handleInputChange({ target: { value: '' } } as any);
+
+    const res = await fetch(`/api/v1/test-files/${file.id}/v`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt,
+        test_file_id: file.id,
+      }),
+    });
+
+    if (res.ok) {
+      router.push(`/files/${file.id}/v/latest`);
+      router.refresh();
+    } else {
+      handleInputChange({ target: { value: temp } } as any);
+    }
+  };
+
+  const showGHIComponents =
+    file?.github_username &&
+    file?.repository &&
+    file?.branch &&
+    file?.target_branch &&
+    file?.file_path;
+
   return (
     <div className="h-full w-full flex">
       <div className="flex flex-col w-full justify-between">
         {/* Output View */}
         {file?.id && file?.version && (
           <div>
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between gap-2 p-4">
               <div>
-                <FilePathDialog
-                  file={file}
-                  opened={showSetup}
-                  setOpened={setShowSetup}
-                />
+                {showGHIComponents && (
+                  <FilePathDialog
+                    file={file}
+                    opened={showSetup}
+                    setOpened={setShowSetup}
+                  />
+                )}
                 <div className="flex items-center gap-2">
-                  <div className="text-lg font-bold">{file.name}</div>
+                  <div className="text-lg font-bold line-clamp-1">
+                    {file.name}
+                  </div>
                   <div className="text-sm bg-foreground text-background font-semibold rounded px-1">
                     {file.version === 'latest' ? 'Latest' : `v${file.version}`}
                   </div>
 
-                  <div className="flex gap-1 items-center">
-                    <div>
-                      {file.pushed ? (
-                        <div className="text-sm text-foreground">
-                          <FileCheck className="w-4 h-4" />
-                        </div>
-                      ) : (
-                        <div className="text-sm opacity-50">
-                          <CloudUpload className="w-4 h-4" />
-                        </div>
-                      )}
+                  {showGHIComponents && (
+                    <div className="flex gap-1 items-center">
+                      <div>
+                        {file.pushed ? (
+                          <div className="text-sm text-foreground">
+                            <FileCheck className="w-4 h-4" />
+                          </div>
+                        ) : (
+                          <div className="text-sm opacity-50">
+                            <CloudUpload className="w-4 h-4" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        {loadingStatus ? (
+                          <div className="text-sm text-foreground">
+                            <LoaderIcon className="w-4 h-4 animate-spin" />
+                          </div>
+                        ) : passing ? (
+                          <div className="text-sm text-green-600 dark:text-green-300">
+                            <Check className="w-4 h-4" />
+                          </div>
+                        ) : (
+                          <div className="text-sm text-red-600 dark:text-red-300">
+                            <X className="w-4 h-4" />
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      {loadingStatus ? (
-                        <div className="text-sm text-foreground">
-                          <LoaderIcon className="w-4 h-4 animate-spin" />
-                        </div>
-                      ) : passing ? (
-                        <div className="text-sm text-green-600 dark:text-green-300">
-                          <Check className="w-4 h-4" />
-                        </div>
-                      ) : (
-                        <div className="text-sm text-red-600 dark:text-red-300">
-                          <X className="w-4 h-4" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
               <Button
                 onClick={() => setCollapsed(!collapsed)}
                 variant="secondary"
+                size="icon"
+                className="flex-shrink-0"
               >
-                {collapsed ? 'Expand' : 'Collapse'}
+                {collapsed ? (
+                  <ArrowDownFromLine className="w-4 h-4" />
+                ) : (
+                  <ArrowUpFromLine className="w-4 h-4" />
+                )}
               </Button>
             </div>
             <div
@@ -214,7 +268,7 @@ export default function TestFileReprompt({
                 collapsed
                   ? 'h-0 opacity-0'
                   : 'p-2 md:p-4 pb-0 md:pb-0 h-fit border-b opacity-100'
-              } overflow-auto border-t transition-all`}
+              } overflow-hidden border-t transition-all`}
             >
               <ChatMessage
                 message={{
@@ -234,7 +288,7 @@ export default function TestFileReprompt({
                 <ChatMessage message={message} key={index} />
               ))}
 
-              {file.code && (
+              {file.code && showGHIComponents && (
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Button onClick={pushFile} disabled={file.pushed || pushing}>
                     {file.pushed
@@ -267,13 +321,13 @@ export default function TestFileReprompt({
                   setValue={(value) =>
                     router.push(`/files/${file?.id}/v/${value}`)
                   }
-                  options={[
-                    { label: 'Latest', value: 'latest' },
-                    ...Array.from({ length: file?.versions || 0 }, (_, i) => ({
+                  options={Array.from(
+                    { length: file?.versions || 0 },
+                    (_, i) => ({
                       label: `Version ${i}`,
                       value: `${i}`,
-                    })),
-                  ]}
+                    })
+                  )}
                   className="pointer-events-auto"
                 />
               </div>
@@ -287,6 +341,11 @@ export default function TestFileReprompt({
               setOpened={setOpened}
               input={input}
               handleInputChange={handleInputChange}
+              handleSubmit={handleImprovement}
+              disabled={
+                (file?.versions || 0) > 0 &&
+                file?.versions !== (parseInt(file?.version || '0') || 0) + 1
+              }
             />
           </div>
         </div>
