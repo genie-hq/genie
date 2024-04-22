@@ -53,8 +53,8 @@ export default function TestFileForm({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: 'genie-hq',
-      repository: 'genie',
+      username: '',
+      repository: '',
       reference_branch: '',
       target_branch: '',
     },

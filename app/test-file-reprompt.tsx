@@ -160,7 +160,7 @@ export default function TestFileReprompt({
                     setShowSetup(true);
                   }}
                 >
-                  {file.github_username}/{file.repository}/{file.branch}
+                  {file.github_username}/{file.repository}/{file.target_branch}
                   {file.file_path}
                 </button>
                 <div className="flex items-center gap-2">
