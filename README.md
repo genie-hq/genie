@@ -40,7 +40,7 @@
 
 - **Version Control and History**: Users can effortlessly track the evolution of test files stored in the Supabase database, enabling them to review past iterations and create new versions as needed. Genie ensures seamless workflow management by automatically storing the workflow YAML file in the `/.github/workflows` folder and test cases in the `/__tests__` folder. If these directories are missing, Genie will create them automatically.
 
-- **Support without Github Account**: You can explore our genie's intelligent test case generation capabilities without needing a GitHub account. However, if you wish to push the generated test cases to GitHub, simply install the Genie bot and integrate it with your GitHub account using the step-by-step guide provided by Genie during setup.
+- **Experiment Without Github Account**: You can explore our genie's intelligent test case generation capabilities without needing a GitHub account. However, if you wish to push the generated test cases to GitHub, simply install the Genie bot and integrate it with your GitHub account using the step-by-step guide provided by Genie during setup.
 
 ## Getting Started With Genie🚀
 
