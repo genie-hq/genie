@@ -9,6 +9,7 @@
 
 <p align="center">
 <a href="#developers-"><strong>Developers</strong></a> ·
+  <a href="#requirements-"><strong>Requirements</strong></a> ·  
   <a href="#features-"><strong>Features</strong></a> ·  
   <a href="#getting-started-"><strong>Getting Started</strong></a> ·
    <a href="#how-to-run-locally-"><strong>How to run locally</strong></a> ·
@@ -23,6 +24,11 @@
 - Luong Quang Huy <a href="https://github.com/WMumei" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 - Doan Huu Quoc (Mudoker) <a href="https://github.com/Mudoker" target="_blank"><img src="https://skillicons.dev/icons?i=github" width="16px" /></a>
 
+## Requirements 📋
+
+- Genie is currently available for use in a Node.js environment with TypeScript and Vitest.
+- Currently, the test automation feature supports only repositories that you own. However, we plan to extend this support in the future. Stay tuned for updates!
+
 ## Features 🌟
 
 - **Streamlined Test Case Creation**: Effortlessly create new test cases by providing prompts to an AI-powered system, eliminating the need for manual test case creation. Genie utilizes the Gemini LLM model to generate test cases based on user prompts.
@@ -34,6 +40,8 @@
 - **Genie Bot**: Genie Bot is Genie's official GitHub application, responsible for managing all interactions between the Genie app and repositories. This includes creating new directories, creating new test cases into new files, updating the test cases, and detecting workflow failures.
 
 - **Version Control and History**: Users can effortlessly track the evolution of test files stored in the Supabase database, enabling them to review past iterations and create new versions as needed. Genie ensures seamless workflow management by automatically storing the workflow YAML file in the `/.github/workflows` folder and test cases in the `/__tests__` folder. If these directories are missing, Genie will create them automatically.
+
+- **Experiment Without Github Account**: You can explore our genie's intelligent test case generation capabilities without needing a GitHub account. However, if you wish to push the generated test cases to GitHub, simply install the Genie bot and integrate it with your GitHub account using the step-by-step guide provided by Genie during setup.
 
 ## Getting Started With Genie🚀
 
@@ -74,10 +82,10 @@ To run the project locally, follow these steps:
 
    - Ensure Docker Desktop application is running.
    - Run `pnpm sb:start`.
-   - Once the dependencies are installed and Supabase is set up, run `npm run dev` or `yarn dev` to start the development server locally.
+   - Once the dependencies are installed and Supabase is set up, run `pnpm run dev`, `npm run dev` or `yarn dev` to start the development server locally.
 
 5. Access Locally:
-   - Once the server is running, open your web browser and go to `http://localhost:6868` to access the locally running Genie application.
+   - Once the server is running, open your web browser and go to `http://localhost:6868/` to access the locally running Genie application.
    - For logging in, obtain the OTP code from `http://localhost:54324/`. Go to the Monitor section to get your latest OTP code.
    - To view the Supabase-based database, navigate to `http://localhost:54323/`.
 

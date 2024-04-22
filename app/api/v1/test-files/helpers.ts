@@ -134,6 +134,31 @@ export async function generateTestFile({
   return new StreamingTextResponse(stream);
 }
 
+export async function updateTestFile(data: {
+  id: string;
+  name: string;
+  github_username: string;
+  repository: string;
+  branch: string;
+  target_branch: string;
+  test_library: string;
+  test_framework: string;
+  file_path: string;
+}) {
+  const supabase = createServerComponentClient({
+    cookies,
+  });
+
+  const { error } = await supabase
+    .from('test_files')
+    .update(data)
+    .eq('id', data.id)
+    .single();
+
+  if (error) return NextResponse.json(error.message, { status: 500 });
+  return NextResponse.json({ message: 'OK' }, { status: 200 });
+}
+
 export async function generateTestFileVersion({
   prompt,
   test_file_id,

@@ -160,23 +160,40 @@ export default function TestFileReprompt({
   const [showSetup, setShowSetup] = useState(false);
 
   const handleImprovement = async (prompt: string) => {
-    if (!file) return;
     let temp = prompt;
     handleInputChange({ target: { value: '' } } as any);
 
-    const res = await fetch(`/api/v1/test-files/${file.id}/v`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt,
-        test_file_id: file.id,
-      }),
-    });
+    const res = await fetch(
+      file?.id ? `/api/v1/test-files/${file.id}/v` : `/api/v1/test-files`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+          file?.id
+            ? {
+                prompt,
+                test_file_id: file.id,
+              }
+            : {
+                name: prompt,
+                github_username: '',
+                repository: '',
+                branch: '',
+                target_branch: '',
+                test_library: 'Vitest',
+                test_framework: 'TypeScript',
+                file_path: '',
+              }
+        ),
+      }
+    );
 
     if (res.ok) {
-      router.push(`/files/${file.id}/v/latest`);
+      const data = await res.json();
+      const fileId = file?.id || data.id;
+      router.push(`/files/${fileId}/v/latest`);
       router.refresh();
     } else {
       handleInputChange({ target: { value: temp } } as any);
@@ -189,6 +206,15 @@ export default function TestFileReprompt({
     file?.branch &&
     file?.target_branch &&
     file?.file_path;
+
+  const handlePush = () => {
+    if (showGHIComponents) {
+      pushFile();
+      return;
+    }
+
+    setOpened(true);
+  };
 
   return (
     <div className="h-full w-full flex">
@@ -288,9 +314,12 @@ export default function TestFileReprompt({
                 <ChatMessage message={message} key={index} />
               ))}
 
-              {file.code && showGHIComponents && (
+              {file.code && (
                 <div className="flex items-center justify-center gap-2 mb-4">
-                  <Button onClick={pushFile} disabled={file.pushed || pushing}>
+                  <Button
+                    onClick={handlePush}
+                    disabled={file.pushed || pushing}
+                  >
                     {file.pushed
                       ? 'File successfully pushed to GitHub.'
                       : pushing

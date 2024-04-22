@@ -3,10 +3,13 @@ import { CreateTestFileDialog } from './create-test-file-dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Send } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from '@/components/ui/use-toast';
 
 interface Props {
   file?: {
     id: string;
+    name: string;
     version: string;
     code: string;
     file_path: string;
@@ -17,6 +20,7 @@ interface Props {
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (prompt: string) => void;
   disabled?: boolean;
+  bypass?: boolean;
 }
 
 export const InputBar: FC<Props> = ({
@@ -28,6 +32,39 @@ export const InputBar: FC<Props> = ({
   handleSubmit,
   disabled,
 }) => {
+  const router = useRouter();
+
+  async function onSubmit(prompt: string) {
+    const res = await fetch('/api/v1/test-files', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: prompt,
+        github_username: '',
+        repository: '',
+        branch: '',
+        target_branch: '',
+        test_library: 'Vitest',
+        test_framework: 'TypeScript',
+        file_path: '',
+      }),
+    });
+
+    if (res.ok) {
+      const { id } = await res.json();
+      router.push(`/files/${id}/v/latest`);
+      router.refresh();
+      close();
+    } else {
+      toast({
+        title: 'An error occurred',
+        description: 'Please try again.',
+      });
+    }
+  }
+
   return (
     <div
       className={`${
@@ -42,12 +79,7 @@ export const InputBar: FC<Props> = ({
           e.preventDefault();
           if (disabled) return;
 
-          if (file) {
-            handleSubmit(input);
-            return;
-          }
-
-          setOpened(true);
+          handleSubmit(input);
         }}
       >
         <Input
@@ -63,23 +95,22 @@ export const InputBar: FC<Props> = ({
           disabled={disabled}
         />
 
-        {!!file?.id ? (
-          <Button
-            type="submit"
-            variant="ghost"
-            size="icon"
-            disabled={!input || disabled}
-          >
-            <Send className="w-6 h-6" />
-          </Button>
-        ) : (
-          <CreateTestFileDialog
-            file={file}
-            opened={opened}
-            setOpened={setOpened}
-            prompt={input}
-          />
-        )}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          disabled={!input || disabled}
+          onClick={() => onSubmit(input)}
+        >
+          <Send className="w-6 h-6" />
+        </Button>
+
+        <CreateTestFileDialog
+          file={file}
+          opened={opened}
+          setOpened={setOpened}
+          prompt={input}
+        />
       </form>
     </div>
   );
