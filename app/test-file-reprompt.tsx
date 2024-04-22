@@ -331,6 +331,10 @@ export default function TestFileReprompt({
               input={input}
               handleInputChange={handleInputChange}
               handleSubmit={handleImprovement}
+              disabled={
+                (file?.versions || 0) > 0 &&
+                file?.versions !== (parseInt(file?.version || '0') || 0) + 1
+              }
             />
           </div>
         </div>

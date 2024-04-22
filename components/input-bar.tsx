@@ -16,6 +16,7 @@ interface Props {
   input: string;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (prompt: string) => void;
+  disabled?: boolean;
 }
 
 export const InputBar: FC<Props> = ({
@@ -25,13 +26,21 @@ export const InputBar: FC<Props> = ({
   input,
   handleInputChange,
   handleSubmit,
+  disabled,
 }) => {
   return (
-    <div className="p-4 w-full">
+    <div
+      className={`${
+        disabled
+          ? 'h-0 overflow-hidden pointer-events-none cursor-default'
+          : 'p-4 w-full'
+      }`}
+    >
       <form
         className="flex gap-2 w-full"
         onSubmit={(e) => {
           e.preventDefault();
+          if (disabled) return;
 
           if (file) {
             handleSubmit(input);
@@ -51,10 +60,16 @@ export const InputBar: FC<Props> = ({
               ? 'What should be improved?'
               : 'What do you want to test today?'
           }
+          disabled={disabled}
         />
 
         {!!file?.id ? (
-          <Button type="submit" variant="ghost" size="icon" disabled={!input}>
+          <Button
+            type="submit"
+            variant="ghost"
+            size="icon"
+            disabled={!input || disabled}
+          >
             <Send className="w-6 h-6" />
           </Button>
         ) : (

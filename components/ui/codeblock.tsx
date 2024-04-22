@@ -13,6 +13,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Check, Copy, Download } from 'lucide-react';
+import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard';
 
 interface Props {
   language: string;
@@ -67,6 +68,8 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme?.startsWith('dark') ?? true;
 
+  const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 });
+
   const downloadAsFile = () => {
     if (typeof window === 'undefined') {
       return;
@@ -95,10 +98,35 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
     URL.revokeObjectURL(url);
   };
 
+  const onCopy = () => {
+    if (isCopied) return;
+    copyToClipboard(value);
+  };
+
   return (
     <div className="codeblock relative w-full rounded font-sans">
       <div className="bg-foreground/10 text-foreground flex w-full items-center justify-between rounded-t border px-4 py-1 pr-4">
         <span className="text-xs font-semibold capitalize">{language}</span>
+        <div className="flex items-center space-x-1">
+          <Button
+            variant="ghost"
+            className="hover:bg-foreground/5 focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-0"
+            onClick={downloadAsFile}
+            size="icon"
+          >
+            <Download />
+            <span className="sr-only">Download</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hover:bg-foreground/5 focus-visible:ring-ring text-xs focus-visible:ring-1 focus-visible:ring-offset-0"
+            onClick={onCopy}
+          >
+            {isCopied ? <Check /> : <Copy />}
+            <span className="sr-only">Copy code</span>
+          </Button>
+        </div>
       </div>
       <SyntaxHighlighter
         language={language}
