@@ -214,7 +214,7 @@ export default function TestFileForm({
               control={form.control}
               name="repository"
               render={({ field }) => (
-                <InputCard title="Repository">
+                <InputCard title="Repository Name">
                   <FormItem className="w-full">
                     <FormControl>
                       <Input
