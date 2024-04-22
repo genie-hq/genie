@@ -67,26 +67,6 @@ export default function FileUpdateForm({
     setSaving(false);
   }
 
-  // on enter key press for input with id "input-bar", submit the form
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        form.handleSubmit(onSubmit)();
-      }
-    };
-
-    document
-      .getElementById('input-bar')
-      ?.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      document
-        .getElementById('input-bar')
-        ?.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [form]);
-
   return (
     <div className="flex flex-col items-center justify-center">
       <Form {...form}>
@@ -116,7 +96,7 @@ export default function FileUpdateForm({
 
             <div className="col-span-full flex justify-end">
               <Button
-                type="button"
+                type="submit"
                 onClick={form.handleSubmit(onSubmit)}
                 disabled={
                   saving ||

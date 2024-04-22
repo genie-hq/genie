@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { Check, CloudUpload, FileCheck, LoaderIcon, X } from 'lucide-react';
+import { extractCodeContent } from '@/utils/parsers/codeblock';
+import FilePathDialog from '@/components/file-path-dialog';
 
 export default function TestFileReprompt({
   file,
@@ -30,7 +32,7 @@ export default function TestFileReprompt({
 }) {
   const router = useRouter();
 
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const { messages, input, isLoading, handleInputChange, reload } = useChat({
     api: file?.id
       ? file.versions === 1
@@ -109,6 +111,7 @@ export default function TestFileReprompt({
   const pushFile = async () => {
     if (!file) return;
     setPushing(true);
+
     const res = await fetch(
       `/api/v1/test-files/${file.id}/v/${file.versions}/push?fileVersionId=${file.version_id}`,
       {
@@ -122,7 +125,7 @@ export default function TestFileReprompt({
           reference_branch: file?.branch,
           target_branch: file?.target_branch,
           path: file?.file_path,
-          content: file?.code,
+          content: extractCodeContent(file.code),
           commit_message:
             file?.versions === 0
               ? 'chore(tests): add initial test file'
@@ -153,46 +156,44 @@ export default function TestFileReprompt({
           <div>
             <div className="flex items-center justify-between p-4">
               <div>
-                <button
-                  className="opacity-50 hover:opacity-100 transition hover:underline"
-                  onClick={() => {
-                    setOpened(true);
-                    setShowSetup(true);
-                  }}
-                >
-                  {file.github_username}/{file.repository}/{file.branch}
-                  {file.file_path}
-                </button>
+                <FilePathDialog
+                  file={file}
+                  opened={showSetup}
+                  setOpened={setShowSetup}
+                />
                 <div className="flex items-center gap-2">
                   <div className="text-lg font-bold">{file.name}</div>
                   <div className="text-sm bg-foreground text-background font-semibold rounded px-1">
                     {file.version === 'latest' ? 'Latest' : `v${file.version}`}
                   </div>
-                  <div>
-                    {file.pushed ? (
-                      <div className="text-sm text-foreground">
-                        <FileCheck className="w-4 h-4" />
-                      </div>
-                    ) : (
-                      <div className="text-sm opacity-50">
-                        <CloudUpload className="w-4 h-4" />
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    {loadingStatus ? (
-                      <div className="text-sm text-foreground">
-                        <LoaderIcon className="w-4 h-4 animate-spin" />
-                      </div>
-                    ) : passing ? (
-                      <div className="text-sm text-green-600 dark:text-green-300">
-                        <Check className="w-4 h-4" />
-                      </div>
-                    ) : (
-                      <div className="text-sm text-red-600 dark:text-red-300">
-                        <X className="w-4 h-4" />
-                      </div>
-                    )}
+
+                  <div className="flex gap-1 items-center">
+                    <div>
+                      {file.pushed ? (
+                        <div className="text-sm text-foreground">
+                          <FileCheck className="w-4 h-4" />
+                        </div>
+                      ) : (
+                        <div className="text-sm opacity-50">
+                          <CloudUpload className="w-4 h-4" />
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      {loadingStatus ? (
+                        <div className="text-sm text-foreground">
+                          <LoaderIcon className="w-4 h-4 animate-spin" />
+                        </div>
+                      ) : passing ? (
+                        <div className="text-sm text-green-600 dark:text-green-300">
+                          <Check className="w-4 h-4" />
+                        </div>
+                      ) : (
+                        <div className="text-sm text-red-600 dark:text-red-300">
+                          <X className="w-4 h-4" />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -283,9 +284,7 @@ export default function TestFileReprompt({
             <InputBar
               file={file}
               opened={opened}
-              showSetup={showSetup}
               setOpened={setOpened}
-              setShowSetup={setShowSetup}
               input={input}
               handleInputChange={handleInputChange}
             />

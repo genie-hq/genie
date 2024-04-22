@@ -10,9 +10,7 @@ interface Props {
     file_path: string;
   };
   opened: boolean;
-  showSetup: boolean;
   setOpened: (opened: boolean) => void;
-  setShowSetup: (showSetup: boolean) => void;
   input: string;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -20,9 +18,7 @@ interface Props {
 export const InputBar: FC<Props> = ({
   file,
   opened,
-  showSetup,
   setOpened,
-  setShowSetup,
   input,
   handleInputChange,
 }) => {
@@ -50,9 +46,7 @@ export const InputBar: FC<Props> = ({
         <CreateTestFileDialog
           file={file}
           opened={opened}
-          showSetup={showSetup}
           setOpened={setOpened}
-          setShowSetup={() => setShowSetup(false)}
           prompt={input}
         />
       </form>
