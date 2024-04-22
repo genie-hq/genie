@@ -1,10 +1,12 @@
 import { cn } from '@/lib/utils';
+import { ReactNode } from 'react';
 
 interface InputCardProps {
   title: string;
   description?: string;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
+  childrenClassName?: string;
 }
 
 export default function InputCard({
@@ -12,6 +14,7 @@ export default function InputCard({
   description,
   className,
   children,
+  childrenClassName,
 }: InputCardProps) {
   return (
     <>
@@ -23,7 +26,7 @@ export default function InputCard({
           </div>
         )}
 
-        <div className="my-2">{children}</div>
+        <div className={cn('my-2', childrenClassName)}>{children}</div>
       </div>
     </>
   );

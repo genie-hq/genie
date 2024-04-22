@@ -11,6 +11,7 @@ import { Send } from 'lucide-react';
 import TestFileForm from './test-file-form';
 import InputCard from './input-card';
 import FileUpdateForm from './file-update-form';
+import { Separator } from './ui/separator';
 
 export function CreateTestFileDialog({
   file,
@@ -49,11 +50,14 @@ export function CreateTestFileDialog({
           </DialogDescription>
         </DialogHeader>
         {!!file?.id || (
-          <InputCard title="Test Generation">
-            <div className="text-sm border rounded p-2 md:p-4 bg-foreground/5">
-              {prompt}
-            </div>
-          </InputCard>
+          <>
+            <InputCard title="Test Generation" childrenClassName="mb-0">
+              <div className="text-sm border rounded p-2 md:p-4 bg-foreground/5">
+                {prompt}
+              </div>
+            </InputCard>
+            <Separator />
+          </>
         )}
 
         <TestFileForm prompt={prompt} close={() => setOpened(false)} />

@@ -25,13 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Separator } from './ui/separator';
 
 const FormSchema = z.object({
-  username: z.string().min(1),
-  repository: z.string().min(1),
-  reference_branch: z.string().min(1),
-  target_branch: z.string().min(1),
-  file_path: z.string().min(1),
+  username: z.string().optional(),
+  repository: z.string().optional(),
+  reference_branch: z.string().optional(),
+  target_branch: z.string().optional(),
+  file_path: z.string().min(1).optional(),
 });
 
 export default function TestFileForm({
@@ -46,9 +47,9 @@ export default function TestFileForm({
   const [branches, setBranches] = useState<string[]>([]);
 
   const [checking, setChecking] = useState(true);
+  const [useGHI, setUseGHI] = useState(true);
   const [requireInstall, setRequireInstall] = useState(true);
 
-  const [response, setResponse] = useState<any>(null);
   const [saving, setSaving] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -85,6 +86,13 @@ export default function TestFileForm({
 
   useEffect(() => {
     async function fetchBranches() {
+      if (!username || !repository || !useGHI) {
+        setBranches([]);
+        setRequireInstall(true);
+        setChecking(false);
+        return;
+      }
+
       setChecking(true);
       const res = await fetch(`/api/github/${username}/${repository}/branches`);
       if (!res.ok) {
@@ -132,13 +140,13 @@ export default function TestFileForm({
       },
       body: JSON.stringify({
         name: prompt,
-        github_username: data.username,
-        repository: data.repository,
-        branch: data.reference_branch,
-        target_branch: data.target_branch,
+        github_username: useGHI ? data.username : '',
+        repository: useGHI ? data.repository : '',
+        branch: useGHI ? data.reference_branch : '',
+        target_branch: useGHI ? data.target_branch : '',
         test_library: 'Vitest',
         test_framework: 'TypeScript',
-        file_path: data.file_path,
+        file_path: useGHI ? data.file_path : '',
       }),
     });
 
@@ -149,7 +157,6 @@ export default function TestFileForm({
       router.refresh();
       close();
     } else {
-      setResponse(null);
       toast({
         title: 'An error occurred',
         description: 'Please try again.',
@@ -223,20 +230,39 @@ export default function TestFileForm({
             />
 
             {requireInstall ? (
-              <Button
-                type="button"
-                onClick={() =>
-                  router.push(
-                    'https://github.com/apps/genie-hq/installations/new'
-                  )
-                }
-                className="col-span-full"
-                disabled={checking}
-              >
-                {checking
-                  ? 'Checking installation...'
-                  : 'Install Genie on GitHub'}
-              </Button>
+              <>
+                <Button
+                  type="button"
+                  onClick={() =>
+                    router.push(
+                      'https://github.com/apps/genie-hq/installations/new'
+                    )
+                  }
+                  className="col-span-full"
+                  disabled={checking || !repository || !username}
+                >
+                  {checking
+                    ? 'Checking installation...'
+                    : 'Install Genie on GitHub'}
+                </Button>
+                {checking || (
+                  <>
+                    <Separator className="col-span-full" />
+                    <Button
+                      type="button"
+                      className="col-span-full"
+                      variant="secondary"
+                      onClick={() => {
+                        setUseGHI(false);
+                        onSubmit(form.getValues());
+                      }}
+                      disabled={checking}
+                    >
+                      Continue without GitHub Integration
+                    </Button>
+                  </>
+                )}
+              </>
             ) : (
               <>
                 <FormField

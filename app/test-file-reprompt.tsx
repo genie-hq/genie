@@ -183,6 +183,13 @@ export default function TestFileReprompt({
     }
   };
 
+  const showGHIComponents =
+    file?.github_username &&
+    file?.repository &&
+    file?.branch &&
+    file?.target_branch &&
+    file?.file_path;
+
   return (
     <div className="h-full w-full flex">
       <div className="flex flex-col w-full justify-between">
@@ -191,11 +198,13 @@ export default function TestFileReprompt({
           <div>
             <div className="flex items-center justify-between gap-2 p-4">
               <div>
-                <FilePathDialog
-                  file={file}
-                  opened={showSetup}
-                  setOpened={setShowSetup}
-                />
+                {showGHIComponents && (
+                  <FilePathDialog
+                    file={file}
+                    opened={showSetup}
+                    setOpened={setShowSetup}
+                  />
+                )}
                 <div className="flex items-center gap-2">
                   <div className="text-lg font-bold line-clamp-1">
                     {file.name}
@@ -204,34 +213,36 @@ export default function TestFileReprompt({
                     {file.version === 'latest' ? 'Latest' : `v${file.version}`}
                   </div>
 
-                  <div className="flex gap-1 items-center">
-                    <div>
-                      {file.pushed ? (
-                        <div className="text-sm text-foreground">
-                          <FileCheck className="w-4 h-4" />
-                        </div>
-                      ) : (
-                        <div className="text-sm opacity-50">
-                          <CloudUpload className="w-4 h-4" />
-                        </div>
-                      )}
+                  {showGHIComponents && (
+                    <div className="flex gap-1 items-center">
+                      <div>
+                        {file.pushed ? (
+                          <div className="text-sm text-foreground">
+                            <FileCheck className="w-4 h-4" />
+                          </div>
+                        ) : (
+                          <div className="text-sm opacity-50">
+                            <CloudUpload className="w-4 h-4" />
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        {loadingStatus ? (
+                          <div className="text-sm text-foreground">
+                            <LoaderIcon className="w-4 h-4 animate-spin" />
+                          </div>
+                        ) : passing ? (
+                          <div className="text-sm text-green-600 dark:text-green-300">
+                            <Check className="w-4 h-4" />
+                          </div>
+                        ) : (
+                          <div className="text-sm text-red-600 dark:text-red-300">
+                            <X className="w-4 h-4" />
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      {loadingStatus ? (
-                        <div className="text-sm text-foreground">
-                          <LoaderIcon className="w-4 h-4 animate-spin" />
-                        </div>
-                      ) : passing ? (
-                        <div className="text-sm text-green-600 dark:text-green-300">
-                          <Check className="w-4 h-4" />
-                        </div>
-                      ) : (
-                        <div className="text-sm text-red-600 dark:text-red-300">
-                          <X className="w-4 h-4" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
               <Button
@@ -277,7 +288,7 @@ export default function TestFileReprompt({
                 <ChatMessage message={message} key={index} />
               ))}
 
-              {file.code && (
+              {file.code && showGHIComponents && (
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <Button onClick={pushFile} disabled={file.pushed || pushing}>
                     {file.pushed
