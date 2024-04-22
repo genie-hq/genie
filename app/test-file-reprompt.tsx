@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu } from '@/components/dropdown-menu';
 import { useRouter } from 'next/navigation';
 import { Check, CloudUpload, FileCheck, LoaderIcon, X } from 'lucide-react';
+import { extractCodeContent } from '@/utils/parsers/codeblock';
 
 export default function TestFileReprompt({
   file,
@@ -109,6 +110,7 @@ export default function TestFileReprompt({
   const pushFile = async () => {
     if (!file) return;
     setPushing(true);
+
     const res = await fetch(
       `/api/v1/test-files/${file.id}/v/${file.versions}/push?fileVersionId=${file.version_id}`,
       {
@@ -122,7 +124,7 @@ export default function TestFileReprompt({
           reference_branch: file?.branch,
           target_branch: file?.target_branch,
           path: file?.file_path,
-          content: file?.code,
+          content: extractCodeContent(file.code),
           commit_message:
             file?.versions === 0
               ? 'chore(tests): add initial test file'
