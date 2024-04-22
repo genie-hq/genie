@@ -154,7 +154,7 @@ export default function TestFileReprompt({
             <div className="flex items-center justify-between p-4">
               <div>
                 <button
-                  className="opacity-50 hover:opacity-100 transition hover:underline"
+                  className="opacity-50 hover:opacity-100 text-start transition hover:underline"
                   onClick={() => {
                     setOpened(true);
                     setShowSetup(true);
@@ -168,31 +168,34 @@ export default function TestFileReprompt({
                   <div className="text-sm bg-foreground text-background font-semibold rounded px-1">
                     {file.version === 'latest' ? 'Latest' : `v${file.version}`}
                   </div>
-                  <div>
-                    {file.pushed ? (
-                      <div className="text-sm text-foreground">
-                        <FileCheck className="w-4 h-4" />
-                      </div>
-                    ) : (
-                      <div className="text-sm opacity-50">
-                        <CloudUpload className="w-4 h-4" />
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    {loadingStatus ? (
-                      <div className="text-sm text-foreground">
-                        <LoaderIcon className="w-4 h-4 animate-spin" />
-                      </div>
-                    ) : passing ? (
-                      <div className="text-sm text-green-600 dark:text-green-300">
-                        <Check className="w-4 h-4" />
-                      </div>
-                    ) : (
-                      <div className="text-sm text-red-600 dark:text-red-300">
-                        <X className="w-4 h-4" />
-                      </div>
-                    )}
+
+                  <div className="flex gap-1 items-center">
+                    <div>
+                      {file.pushed ? (
+                        <div className="text-sm text-foreground">
+                          <FileCheck className="w-4 h-4" />
+                        </div>
+                      ) : (
+                        <div className="text-sm opacity-50">
+                          <CloudUpload className="w-4 h-4" />
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      {loadingStatus ? (
+                        <div className="text-sm text-foreground">
+                          <LoaderIcon className="w-4 h-4 animate-spin" />
+                        </div>
+                      ) : passing ? (
+                        <div className="text-sm text-green-600 dark:text-green-300">
+                          <Check className="w-4 h-4" />
+                        </div>
+                      ) : (
+                        <div className="text-sm text-red-600 dark:text-red-300">
+                          <X className="w-4 h-4" />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
