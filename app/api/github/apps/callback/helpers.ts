@@ -20,7 +20,7 @@ export async function getAccessToken(installationId: string) {
 function generateJWT() {
   const appId = process.env.BOT_APP_ID || '';
   const privateKey = process.env.BOT_PRIVATE_KEY?.replace(/\\n/g, '\n') || '';
-
+  
   const jwt = require('jsonwebtoken');
 
   const payload = {
