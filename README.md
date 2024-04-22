@@ -84,7 +84,7 @@ To run the project locally, follow these steps:
    - Once the dependencies are installed and Supabase is set up, run `pnpm run dev`, `npm run dev` or `yarn dev` to start the development server locally.
 
 5. Access Locally:
-   - Once the server is running, open your web browser and go to `http://localhost:6868` to access the locally running Genie application.
+   - Once the server is running, open your web browser and go to `http://localhost:6868/` to access the locally running Genie application.
    - For logging in, obtain the OTP code from `http://localhost:54324/`. Go to the Monitor section to get your latest OTP code.
    - To view the Supabase-based database, navigate to `http://localhost:54323/`.
 
