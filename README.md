@@ -4,7 +4,7 @@
 </a>
 
 <p align="center">
- AI-powered test generation, built by a team of 4, for Supabase Open Source Hackathon 2024
+ AI-powered test generation
 </p>
 
 <p align="center">
@@ -58,8 +58,6 @@ To start using Genie, follow these simple steps:
 5. **Access Version History**: Explore the version history of test files to review past iterations and generate new versions as necessary, ensuring continuous improvement and quality assurance.
 
 ## How to run locally 💻
-
-This is a Supabase Open Source Hackathon 2024 project! Feel free to contribute to our open source project, Genie!
 
 To run the project locally, follow these steps:
 
